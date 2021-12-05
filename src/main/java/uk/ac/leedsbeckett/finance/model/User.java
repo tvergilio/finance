@@ -1,15 +1,14 @@
-package uk.ac.leedsbeckett.finance.system;
+package uk.ac.leedsbeckett.finance.model;
 
 import java.util.Objects;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "FINANCE_USER")
 public class User {
 
-    private @Id @GeneratedValue Long id;
+    private @Id @GeneratedValue(strategy= GenerationType.IDENTITY) Long id;
     private String name;
     private String role;
 

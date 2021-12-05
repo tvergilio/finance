@@ -1,4 +1,4 @@
-package uk.ac.leedsbeckett.finance.system;
+package uk.ac.leedsbeckett.finance.model;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
