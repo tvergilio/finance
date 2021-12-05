@@ -1,7 +1,10 @@
 package uk.ac.leedsbeckett.finance.system;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,20 +13,29 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 class UserController {
 
     private final UserRepository repository;
+    private final UserModelAssembler assembler;
 
-    UserController(UserRepository repository) {
+    UserController(UserRepository repository, UserModelAssembler assembler) {
         this.repository = repository;
+        this.assembler = assembler;
     }
 
     // Aggregate root
     // tag::get-aggregate-root[]
     @GetMapping("/users")
-    List<User> all() {
-        return repository.findAll();
+    CollectionModel<EntityModel<User>> all() {
+        List<EntityModel<User>> users = repository.findAll()
+                .stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
+        return CollectionModel.of(users, linkTo(methodOn(UserController.class).all()).withSelfRel());
     }
     // end::get-aggregate-root[]
 
@@ -34,9 +46,10 @@ class UserController {
 
     // Single item
     @GetMapping("/users/{id}")
-    User one(@PathVariable Long id) {
-        return repository.findById(id)
+    EntityModel<User> one(@PathVariable Long id) {
+        User user = repository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
+        return assembler.toModel(user);
     }
 
     @PutMapping("/users/{id}")
