@@ -7,20 +7,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
-public class UserNotFoundAdvice {
+public class AccountNotFoundAdvice {
 
     /**
      * ResponseBody signals that this advice is rendered straight into the response body.     *
-     * ExceptionHandler configures the advice to only respond if a UserNotFoundException is thrown.     *
+     * ExceptionHandler configures the advice to only respond if an AccountNotFoundException is thrown.     *
      * ResponseStatus says to issue an HttpStatus.NOT_FOUND, i.e. an HTTP 404.
      *
      * The body of the advice generates the content.
      */
 
     @ResponseBody
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler(AccountNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    String userNotFoundHandler(UserNotFoundException ex) {
+    String accountNotFoundHandler(AccountNotFoundException ex) {
         return ex.getMessage();
     }
 }

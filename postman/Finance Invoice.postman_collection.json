@@ -1,0 +1,147 @@
+{
+	"info": {
+		"_postman_id": "22efcf57-1cc6-42c8-bcd2-c19031b4ab82",
+		"name": "Finance Invoice",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create new invoice",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"amount\": 10.00,\r\n    \"dueDate\": \"2021-11-06T10:05:23.081168\",\r\n    \"type\": \"LIBRARY_FINE\",\r\n    \"status\": \"OUTSTANDING\",\r\n    \"account\": {\r\n        \"id\": 1\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost/invoices/",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"invoices",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pay invoice",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost/invoices/6/pay",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"invoices",
+						"6",
+						"pay"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cancel invoice",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost/invoices/5/cancel",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"invoices",
+						"5",
+						"cancel"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all invoices",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost/invoices/",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"invoices",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get an invoice",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost/invoices/5",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"invoices",
+						"5"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -86,7 +86,7 @@ class InvoiceController {
     @PutMapping("/invoices/{id}/pay")
     public ResponseEntity<?> pay(@PathVariable Long id) {
 
-        Invoice invoice = invoiceRepository.findById(id) //
+        Invoice invoice = invoiceRepository.findById(id)
                 .orElseThrow(() -> new InvoiceNotFoundException(id));
 
         if (invoice.getStatus() == Status.OUTSTANDING) {
@@ -94,11 +94,11 @@ class InvoiceController {
             return ResponseEntity.ok(assembler.toModel(invoiceRepository.save(invoice)));
         }
 
-        return ResponseEntity //
-                .status(HttpStatus.METHOD_NOT_ALLOWED) //
-                .header(HttpHeaders.CONTENT_TYPE, MediaTypes.HTTP_PROBLEM_DETAILS_JSON_VALUE) //
-                .body(Problem.create() //
-                        .withTitle("Method not allowed") //
+        return ResponseEntity
+                .status(HttpStatus.METHOD_NOT_ALLOWED)
+                .header(HttpHeaders.CONTENT_TYPE, MediaTypes.HTTP_PROBLEM_DETAILS_JSON_VALUE)
+                .body(Problem.create()
+                        .withTitle("Method not allowed")
                         .withDetail("You can't pay an invoice that is in the " + invoice.getStatus() + " status"));
     }
 }

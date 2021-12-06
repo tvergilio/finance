@@ -1,0 +1,72 @@
+{
+	"info": {
+		"_postman_id": "5b82d5e1-0573-463e-bc40-3cf52ddf9190",
+		"name": "Finance Account",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get all finance accounts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost/accounts",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create new finance account",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"studentId\": \"c3429925\"\r\n}"
+				},
+				"url": {
+					"raw": "localhost/accounts/",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"accounts",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get finance account",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost/accounts/1",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"accounts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

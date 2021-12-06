@@ -15,7 +15,9 @@ public class Invoice {
     Long id;
     private Double amount;
     private LocalDateTime dueDate;
+    private Type type;
     private Status status;
+
     @ManyToOne
     @JoinColumn(name="account_fk",referencedColumnName="id")
     @ToString.Exclude
@@ -24,9 +26,10 @@ public class Invoice {
     public Invoice() {
     }
 
-    public Invoice(Double amount, LocalDateTime dueDate, Status status, Account account) {
+    public Invoice(Double amount, LocalDateTime dueDate, Type type, Status status, Account account) {
         this.amount = amount;
         this.dueDate = dueDate;
+        this.type = type;
         this.status = status;
         this.account = account;
     }
