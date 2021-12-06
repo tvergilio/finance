@@ -90,12 +90,14 @@ class AccountController {
 
 
     private Account populateOutstandingBalance(Account account) {
-        List<Invoice> invoices = invoiceRepository.findInvoiceByAccount_IdAndStatus(account.getId(), Status.OUTSTANDING);
+        if (account != null) {
+            List<Invoice> invoices = invoiceRepository.findInvoiceByAccount_IdAndStatus(account.getId(), Status.OUTSTANDING);
 
-        if (invoices != null && !invoices.isEmpty()) {
-            account.setHasOutstandingBalance(invoices
-                    .stream()
-                    .anyMatch(invoice -> invoice.getStatus().equals(Status.OUTSTANDING)));
+            if (invoices != null && !invoices.isEmpty()) {
+                account.setHasOutstandingBalance(invoices
+                        .stream()
+                        .anyMatch(invoice -> invoice.getStatus().equals(Status.OUTSTANDING)));
+            }
         }
         return account;
     }
