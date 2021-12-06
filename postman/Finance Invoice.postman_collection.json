@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "22efcf57-1cc6-42c8-bcd2-c19031b4ab82",
+		"_postman_id": "e331fd33-1019-4bb2-b131-782678860c72",
 		"name": "Finance Invoice",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -131,13 +131,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost/invoices/5",
+					"raw": "localhost/invoices/6",
 					"host": [
 						"localhost"
 					],
 					"path": [
 						"invoices",
-						"5"
+						"6"
 					]
 				}
 			},
