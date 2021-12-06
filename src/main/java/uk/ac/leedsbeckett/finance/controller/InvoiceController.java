@@ -9,10 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.ac.leedsbeckett.finance.exception.InvoiceNotFoundException;
-import uk.ac.leedsbeckett.finance.model.Invoice;
-import uk.ac.leedsbeckett.finance.model.InvoiceModelAssembler;
-import uk.ac.leedsbeckett.finance.model.InvoiceRepository;
-import uk.ac.leedsbeckett.finance.model.Status;
+import uk.ac.leedsbeckett.finance.model.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,29 +22,31 @@ public
 class InvoiceController {
 
     private final InvoiceRepository invoiceRepository;
+    private final AccountRepository accountRepository;
     private final InvoiceModelAssembler assembler;
 
-    InvoiceController(InvoiceRepository invoiceRepository, InvoiceModelAssembler assembler) {
+    InvoiceController(InvoiceRepository invoiceRepository, AccountRepository accountRepository, InvoiceModelAssembler assembler) {
 
         this.invoiceRepository = invoiceRepository;
+        this.accountRepository = accountRepository;
         this.assembler = assembler;
     }
 
     @GetMapping("/invoices")
     public CollectionModel<EntityModel<Invoice>> all() {
 
-        List<EntityModel<Invoice>> invoices = invoiceRepository.findAll().stream() //
-                .map(assembler::toModel) //
+        List<EntityModel<Invoice>> invoices = invoiceRepository.findAll().stream()
+                .map(assembler::toModel)
                 .collect(Collectors.toList());
 
-        return CollectionModel.of(invoices, //
+        return CollectionModel.of(invoices,
                 linkTo(methodOn(InvoiceController.class).all()).withSelfRel());
     }
 
     @GetMapping("/invoices/{id}")
     public EntityModel<Invoice> one(@PathVariable Long id) {
 
-        Invoice invoice = invoiceRepository.findById(id) //
+        Invoice invoice = invoiceRepository.findById(id)
                 .orElseThrow(() -> new InvoiceNotFoundException(id));
 
         return assembler.toModel(invoice);
@@ -57,10 +56,11 @@ class InvoiceController {
     ResponseEntity<EntityModel<Invoice>> newInvoice(@RequestBody Invoice invoice) {
 
         invoice.setStatus(Status.OUTSTANDING);
+        invoice.setAccount(accountRepository.findAccountByStudentId(invoice.getStudentId()));
         Invoice newInvoice = invoiceRepository.save(invoice);
 
-        return ResponseEntity //
-                .created(linkTo(methodOn(InvoiceController.class).one(newInvoice.getId())).toUri()) //
+        return ResponseEntity
+                .created(linkTo(methodOn(InvoiceController.class).one(newInvoice.getId())).toUri())
                 .body(assembler.toModel(newInvoice));
     }
 

@@ -50,6 +50,13 @@ class AccountController {
                 .body(entityModel);
     }
 
+
+    @GetMapping("/accounts/student/{studentId}")
+    public EntityModel<Account> getStudentAccount(@PathVariable String studentId) {
+        Account studentAccount = accountRepository.findAccountByStudentId(studentId);
+        return assembler.toModel(populateOutstandingBalance(studentAccount));
+    }
+
     @GetMapping("/accounts/{id}")
     public EntityModel<Account> one(@PathVariable Long id) {
         Account account = accountRepository.findById(id)

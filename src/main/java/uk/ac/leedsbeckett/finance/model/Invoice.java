@@ -1,6 +1,7 @@
 package uk.ac.leedsbeckett.finance.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.ToString;
 
@@ -18,16 +19,25 @@ public class Invoice {
     private LocalDateTime dueDate;
     private Type type;
     private Status status;
+    @ManyToOne
+    @JoinColumn(name="account_fk",referencedColumnName="id")
+    @ToString.Exclude
+    private Account account;
 
+    @JsonProperty
     public String getStudentId() {
         return account.getStudentId();
     }
 
-    @ManyToOne
-    @JoinColumn(name="account_fk",referencedColumnName="id")
-    @ToString.Exclude
+    @JsonProperty
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
     @JsonIgnore
-    private Account account;
+    public Account getAccount() {
+        return this.account;
+    }
 
     public Invoice() {
     }
