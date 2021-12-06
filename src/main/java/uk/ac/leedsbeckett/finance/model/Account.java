@@ -1,5 +1,6 @@
 package uk.ac.leedsbeckett.finance.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
 
@@ -12,12 +13,16 @@ import javax.persistence.*;
 @Data
 public class Account {
 
-    private @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
+    private @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     private String studentId;
-    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
+    @JsonIgnore
     private List<Invoice> invoiceList = new ArrayList<>();
+    @Transient
+    private boolean hasOutstandingBalance;
 
     public Account() {
     }
@@ -25,4 +30,4 @@ public class Account {
     public Account(String studentId) {
         this.studentId = studentId;
     }
- }
+}

@@ -18,4 +18,5 @@ class AccountModelAssembler implements RepresentationModelAssembler<Account, Ent
                 linkTo(methodOn(InvoiceController.class).one(account.getId())).withSelfRel(),
                 linkTo(methodOn(InvoiceController.class).all()).withRel("accounts"));
     }
+
 }
