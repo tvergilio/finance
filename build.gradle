@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'uk.ac.leedsbeckett'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0'
 sourceCompatibility = '11'
 
 repositories {
@@ -26,4 +26,8 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+jar {
+    enabled = false //strangely enough, this creates only the one jar we need
 }

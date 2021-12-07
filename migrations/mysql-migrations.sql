@@ -1,6 +1,8 @@
-create schema finance;
+SET GLOBAL general_log_file='/var/log/mysql/mariadb.log';
+SET GLOBAL general_log = 1;
 
-grant ALL PRIVILEGES on finance.* to `finance-spring-user`;
+create schema finance;
+use finance;
 
 create or replace table account
 (
@@ -54,4 +56,5 @@ create or replace table account_invoice_list
         foreign key (account_id) references account (id)
 );
 
-
+CREATE USER 'finance-spring-user'@'%' IDENTIFIED BY 'finance-secret';
+grant ALL PRIVILEGES on finance.* to `finance-spring-user`;
