@@ -24,12 +24,12 @@ This is a simple microservices-based application which exposes a RESTful API. It
    (replace the XXXXXs)
 3. From the `finance` directory, run the app and db services:<br/>
    `docker-compose up`
-4. To start the services separately:<br/>
-   `docker-compose up db`<br/>
-   `docker-compose up app`<br/>
 
 ## Test using Postman
 Download Postman from https://www.postman.com/ and import the collections found in the `finance/postman` directory.
+
+## Future Development
+Create a simple web portal that allows users to pay invoices.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
