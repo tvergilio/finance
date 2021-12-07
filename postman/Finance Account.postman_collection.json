@@ -11,10 +11,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost/accounts",
+					"raw": "localhost:8081/accounts",
 					"host": [
 						"localhost"
 					],
+					"port": "8081",
 					"path": [
 						"accounts"
 					]
@@ -35,13 +36,14 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"studentId\": \"c3429925\"\r\n}"
+					"raw": "{\r\n    \"studentId\": \"c3429927\"\r\n}"
 				},
 				"url": {
-					"raw": "localhost/accounts/",
+					"raw": "localhost:8081/accounts/",
 					"host": [
 						"localhost"
 					],
+					"port": "8081",
 					"path": [
 						"accounts",
 						""
@@ -52,27 +54,33 @@
 		},
 		{
 			"name": "Get account by student ID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
-				"method": "POST",
+				"method": "GET",
 				"header": [
 					{
 						"key": "Content-Type",
 						"value": "application/json",
-						"type": "text"
+						"type": "text",
+						"disabled": true
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"studentId\": \"c3429925\"\r\n}"
+					"raw": ""
 				},
 				"url": {
-					"raw": "localhost/accounts/",
+					"raw": "localhost:8081/accounts/student/c7465688",
 					"host": [
 						"localhost"
 					],
+					"port": "8081",
 					"path": [
 						"accounts",
-						""
+						"student",
+						"c7465688"
 					]
 				}
 			},
@@ -84,13 +92,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost/accounts/3",
+					"raw": "localhost:8081/accounts/2",
 					"host": [
 						"localhost"
 					],
+					"port": "8081",
 					"path": [
 						"accounts",
-						"3"
+						"2"
 					]
 				}
 			},

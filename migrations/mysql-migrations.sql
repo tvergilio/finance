@@ -57,4 +57,5 @@ create or replace table account_invoice_list
 );
 
 CREATE USER 'finance-spring-user'@'%' IDENTIFIED BY 'finance-secret';
-grant ALL PRIVILEGES on finance.* to `finance-spring-user`;
+GRANT ALL PRIVILEGES on finance.* to `finance-spring-user`;
+FLUSH PRIVILEGES;

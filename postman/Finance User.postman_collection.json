@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "48d3d87d-d9f6-4816-9af5-86d7f11d2d13",
+		"_postman_id": "fcfcc22b-47ca-42a1-8fe3-49c33e786daf",
 		"name": "Finance User",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -20,10 +20,11 @@
 					}
 				},
 				"url": {
-					"raw": "localhost/users",
+					"raw": "localhost:8081/users",
 					"host": [
 						"localhost"
 					],
+					"port": "8081",
 					"path": [
 						"users"
 					]
@@ -46,10 +47,11 @@
 					}
 				},
 				"url": {
-					"raw": "localhost/users/1",
+					"raw": "localhost:8081/users/1",
 					"host": [
 						"localhost"
 					],
+					"port": "8081",
 					"path": [
 						"users",
 						"1"
@@ -64,10 +66,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost/users/1",
+					"raw": "localhost:8081/users/1",
 					"host": [
 						"localhost"
 					],
+					"port": "8081",
 					"path": [
 						"users",
 						"1"
@@ -82,10 +85,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost/users",
+					"raw": "localhost:8081/users",
 					"host": [
 						"localhost"
 					],
+					"port": "8081",
 					"path": [
 						"users"
 					]

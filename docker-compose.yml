@@ -1,0 +1,35 @@
+version: '2'
+
+networks:
+  finance-nw:
+
+services:
+
+  db:
+    image: mariadb
+    restart: always
+    volumes:
+      - ./migrations/mysql-migrations.sql:/docker-entrypoint-initdb.d/mysql-mysql-migrations.sql
+      - ./db:/var/lib/mariadb
+    ports:
+      - "3306:3306"
+    #   Comment out the ports you don't need to connect to the database directly to debug
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    networks:
+      - finance-nw
+
+  app:
+    image: tvergilio/finance
+    environment:
+      spring.datasource.url: jdbc:mariadb://db:3306/${DB_NAME}
+      spring.datasource.username: ${DB_APPLICATION_USER}
+      spring.datasource.password: ${DB_APPLICATION_PASSWORD}
+    ports:
+      - "8081:8081"
+    expose:
+      - "8081"
+    depends_on:
+      - db
+    networks:
+      - finance-nw

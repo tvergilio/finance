@@ -12,7 +12,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"amount\": 10.00,\r\n    \"dueDate\": \"2021-11-06T10:05:23.081168\",\r\n    \"type\": \"LIBRARY_FINE\",\r\n    \"status\": \"OUTSTANDING\",\r\n    \"account\": {\r\n        \"id\": 1\r\n    }\r\n}",
+					"raw": "{\r\n    \"amount\": 5.00,\r\n    \"dueDate\": \"2021-11-06T10:05:23.081168\",\r\n    \"type\": \"LIBRARY_FINE\",\r\n    \"account\": {\r\n        \"studentId\": \"c7465688\"\r\n    }\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -20,10 +20,11 @@
 					}
 				},
 				"url": {
-					"raw": "localhost/invoices/",
+					"raw": "localhost:8081/invoices/",
 					"host": [
 						"localhost"
 					],
+					"port": "8081",
 					"path": [
 						"invoices",
 						""
@@ -53,10 +54,11 @@
 					}
 				},
 				"url": {
-					"raw": "localhost/invoices/6/pay",
+					"raw": "localhost:8081/invoices/6/pay",
 					"host": [
 						"localhost"
 					],
+					"port": "8081",
 					"path": [
 						"invoices",
 						"6",
@@ -87,13 +89,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost/invoices/5/cancel",
+					"raw": "localhost:8081/invoices/7/cancel",
 					"host": [
 						"localhost"
 					],
+					"port": "8081",
 					"path": [
 						"invoices",
-						"5",
+						"7",
 						"cancel"
 					],
 					"query": [
@@ -113,10 +116,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost/invoices/",
+					"raw": "localhost:8081/invoices/",
 					"host": [
 						"localhost"
 					],
+					"port": "8081",
 					"path": [
 						"invoices",
 						""
@@ -131,13 +135,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost/invoices/6",
+					"raw": "localhost:8081/invoices/1",
 					"host": [
 						"localhost"
 					],
+					"port": "8081",
 					"path": [
 						"invoices",
-						"6"
+						""
 					]
 				}
 			},
