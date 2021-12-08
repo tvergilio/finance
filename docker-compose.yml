@@ -1,7 +1,7 @@
 version: '2'
 
 networks:
-  finance-nw:
+  finance:
 
 services:
 
@@ -13,14 +13,13 @@ services:
       - ./db:/var/lib/mariadb
     ports:
       - "3306:3306"
-    #   Comment out the ports you don't need to connect to the database directly to debug
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     networks:
-      - finance-nw
+      - finance
 
   app:
-    image: tvergilio/finance
+    image: tvergilio/finance:1.0
     environment:
       spring.datasource.url: jdbc:mariadb://db:3306/${DB_NAME}
       spring.datasource.username: ${DB_APPLICATION_USER}
@@ -32,4 +31,4 @@ services:
     depends_on:
       - db
     networks:
-      - finance-nw
+      - finance

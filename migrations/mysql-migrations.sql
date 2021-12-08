@@ -8,7 +8,7 @@ create or replace table account
 (
     id         bigint auto_increment
         primary key,
-    student_id varchar(255) null
+    student_id varchar(255) unique null
 );
 
 INSERT INTO finance.account (id, student_id) VALUES (1, 'c7465688');

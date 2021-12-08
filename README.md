@@ -15,6 +15,9 @@ This is a simple microservices-based application which exposes a RESTful API. It
 1. The application integrates with a MariaDB relational database.
 2. Scripts to create the database schema can be found in the migrations folder and are run automatically by docker-compose.
 
+## Demo
+[![Watch the demo.](http://img.youtube.com/vi/zN4qPE-a5Xs/hqdefault.jpg)](https://youtu.be/zN4qPE-a5Xs)
+
 ## Run using Docker Compose
 1. Create a file called `.env` inside the `finance` directory and enter the following text (in separate lines):<br/>
    `DB_APPLICATION_USER=XXXXXXXXX`<br/>
