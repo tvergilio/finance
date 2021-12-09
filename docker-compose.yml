@@ -10,7 +10,6 @@ services:
     restart: always
     volumes:
       - ./migrations/mysql-migrations.sql:/docker-entrypoint-initdb.d/mysql-mysql-migrations.sql
-      - ./db:/var/lib/mariadb
     ports:
       - "3306:3306"
     environment:
