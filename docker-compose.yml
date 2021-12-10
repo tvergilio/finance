@@ -17,8 +17,8 @@ services:
     networks:
       - finance
     healthcheck:
-      test: [ "CMD", "mysqladmin" ,"ping", "-h", "db" ]
-      timeout: 3s
+      test: "/usr/bin/mysql --user=root --password=$$MYSQL_ROOT_PASSWORD --execute \"SHOW DATABASES;\""
+      timeout: 2s
       retries: 10
 
   app:
