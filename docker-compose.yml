@@ -16,6 +16,10 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     networks:
       - finance
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "db" ]
+      timeout: 3s
+      retries: 10
 
   app:
     image: tvergilio/finance:1.0
@@ -28,6 +32,7 @@ services:
     expose:
       - "8081"
     depends_on:
-      - db
+        db:
+          condition: service_healthy
     networks:
       - finance
