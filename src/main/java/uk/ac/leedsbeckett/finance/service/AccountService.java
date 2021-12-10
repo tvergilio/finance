@@ -1,5 +1,6 @@
 package uk.ac.leedsbeckett.finance.service;
 
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -43,21 +44,11 @@ public class AccountService {
         return CollectionModel.of(accounts, linkTo(methodOn(AccountController.class).all()).withSelfRel());
     }
 
-    private Account populateOutstandingBalance(Account account) {
-        if (account != null) {
-            List<Invoice> invoices = invoiceRepository.findInvoiceByAccount_IdAndStatus(account.getId(), Status.OUTSTANDING);
-
-            if (invoices != null && !invoices.isEmpty()) {
-                account.setHasOutstandingBalance(invoices
-                        .stream()
-                        .anyMatch(invoice -> invoice.getStatus().equals(Status.OUTSTANDING)));
-            }
-        }
-        return account;
-    }
-
     public EntityModel<Account> getAccountByStudentId(String studentId) {
         Account studentAccount = accountRepository.findAccountByStudentId(studentId);
+        if (studentAccount == null) {
+            throw new ObjectNotFoundException(studentId, "studentAccount");
+        }
         return assembler.toModel(populateOutstandingBalance(studentAccount));
     }
 
@@ -87,5 +78,18 @@ public class AccountService {
     public ResponseEntity<?> deleteAccount(Long id) {
         accountRepository.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private Account populateOutstandingBalance(Account account) {
+        if (account != null) {
+            List<Invoice> invoices = invoiceRepository.findInvoiceByAccount_IdAndStatus(account.getId(), Status.OUTSTANDING);
+
+            if (invoices != null && !invoices.isEmpty()) {
+                account.setHasOutstandingBalance(invoices
+                        .stream()
+                        .anyMatch(invoice -> invoice.getStatus().equals(Status.OUTSTANDING)));
+            }
+        }
+        return account;
     }
 }
