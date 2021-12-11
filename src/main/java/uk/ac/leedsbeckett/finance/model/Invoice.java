@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -16,7 +16,7 @@ public class Invoice {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     Long id;
     private Double amount;
-    private LocalDateTime dueDate;
+    private LocalDate dueDate;
     private Type type;
     private Status status;
     @ManyToOne
@@ -42,7 +42,7 @@ public class Invoice {
     public Invoice() {
     }
 
-    public Invoice(Double amount, LocalDateTime dueDate, Type type, Status status, Account account) {
+    public Invoice(Double amount, LocalDate dueDate, Type type, Status status, Account account) {
         this.amount = amount;
         this.dueDate = dueDate;
         this.type = type;

@@ -9,28 +9,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.ac.leedsbeckett.finance.controller.AccountController;
 import uk.ac.leedsbeckett.finance.exception.AccountNotFoundException;
 import uk.ac.leedsbeckett.finance.model.Account;
 import uk.ac.leedsbeckett.finance.model.AccountModelAssembler;
 import uk.ac.leedsbeckett.finance.model.AccountRepository;
 import uk.ac.leedsbeckett.finance.model.InvoiceRepository;
 
-import javax.swing.text.html.Option;
 import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -38,7 +41,7 @@ import static org.mockito.Mockito.verify;
 class AccountServiceTest {
 
     @TestConfiguration
-    class EmployeeServiceImplTestContextConfiguration {
+    class AccountServiceImplTestContextConfiguration {
         @Bean
         public AccountService accountService() {
             return new AccountService(accountRepository, accountModelAssembler, invoiceRepository);
@@ -55,7 +58,7 @@ class AccountServiceTest {
     private AccountRepository accountRepository;
     @MockBean
     private InvoiceRepository invoiceRepository;
-    @Autowired
+    @SpyBean
     private AccountModelAssembler accountModelAssembler;
     @Autowired
     private AccountService accountService;
@@ -81,37 +84,49 @@ class AccountServiceTest {
     void testGetAccountByStudentId_withValidID_ReturnsExistingAccount() throws Exception {
         EntityModel<Account> result = accountService.getAccountByStudentId(studentId);
         assertThat(studentId.equals(result.getContent().getStudentId()));
+        verify(accountModelAssembler, times(1)).toModel(account);
     }
 
     @Test
     void testGetAccountByStudentId_withInValidID_throwsException() throws Exception {
-        assertThrows(ObjectNotFoundException.class, () -> accountService.getAccountByStudentId("dummy"), "Exception was not thrown.");
+        assertThrows(ObjectNotFoundException.class, () -> accountService.getAccountByStudentId("dummy"),
+                "Exception was not thrown.");
+        verify(accountModelAssembler, times(0)).toModel(any());
     }
 
     @Test
     void testGetAccountByStudentId_withEmptyID_throwsException() throws Exception {
-        assertThrows(ObjectNotFoundException.class, () -> accountService.getAccountByStudentId(""), "Exception was not thrown.");
+        assertThrows(ObjectNotFoundException.class, () -> accountService.getAccountByStudentId(""),
+                "Exception was not thrown.");
+        verify(accountModelAssembler, times(0)).toModel(any());
     }
 
     @Test
     void testGetAccountByStudentId_withNullID_throwsException() throws Exception {
-        assertThrows(ObjectNotFoundException.class, () -> accountService.getAccountByStudentId(null), "Exception was not thrown.");
+        assertThrows(ObjectNotFoundException.class, () -> accountService.getAccountByStudentId(null),
+                "Exception was not thrown.");
+        verify(accountModelAssembler, times(0)).toModel(any());
     }
 
     @Test
     void testGetAccountById_withValidID_ReturnsExistingAccount() throws Exception {
         EntityModel<Account> result = accountService.getAccountById(id);
         assertEquals(id, result.getContent().getId());
+        verify(accountModelAssembler, times(1)).toModel(account);
     }
 
     @Test
     void testGetAccountById_withInValidID_throwsException() throws Exception {
-        assertThrows(AccountNotFoundException.class, () -> accountService.getAccountById(0L), "Exception was not thrown.");
+        assertThrows(AccountNotFoundException.class, () -> accountService.getAccountById(0L),
+                "Exception was not thrown.");
+        verify(accountModelAssembler, times(0)).toModel(any());
     }
 
     @Test
     void testGetAccountById_withNullID_throwsException() throws Exception {
-        assertThrows(AccountNotFoundException.class, () -> accountService.getAccountById(null), "Exception was not thrown.");
+        assertThrows(AccountNotFoundException.class, () -> accountService.getAccountById(null),
+                "Exception was not thrown.");
+        verify(accountModelAssembler, times(0)).toModel(any());
     }
 
     @Test
@@ -119,16 +134,23 @@ class AccountServiceTest {
         CollectionModel<EntityModel<Account>> result = accountService.getAllAccounts();
         assertEquals(2, result.getContent().size());
         assertThat(result.getContent().containsAll(Arrays.asList(account, anotherAccount)));
+        verify(accountModelAssembler, times(1)).toModel(account);
+        verify(accountModelAssembler, times(1)).toModel(anotherAccount);
     }
 
     @Test
     void testCreateNewAccount_withValidData_createsAccount() throws Exception {
-        assertEquals(accountModelAssembler.toModel(account), accountService.createNewAccount(account).getBody());
+        EntityModel<Account> accountEntityModel = EntityModel.of(account,
+                linkTo(methodOn(AccountController.class).one(account.getId())).withSelfRel(),
+                linkTo(methodOn(AccountController.class).all()).withRel("accounts"));
+        assertEquals(accountEntityModel, accountService.createNewAccount(account).getBody());
+        verify(accountModelAssembler, times(1)).toModel(account);
     }
 
     @Test
     void testDeleteAccount_withValidId_deletesAccount() throws Exception {
         accountService.deleteAccount(id);
         verify(accountRepository, times(1)).deleteById(id);
+        verify(accountModelAssembler, times(0)).toModel(any());
     }
 }
