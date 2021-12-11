@@ -15,7 +15,7 @@ class InvoiceModelAssembler implements RepresentationModelAssembler<Invoice, Ent
     @Override
     public EntityModel<Invoice> toModel(Invoice invoice) {
 
-        if (isValid(invoice)) {
+        if (!isValid(invoice)) {
             throw new InvoiceNotValidException();
         }
 
@@ -23,7 +23,7 @@ class InvoiceModelAssembler implements RepresentationModelAssembler<Invoice, Ent
                 linkTo(methodOn(InvoiceController.class).one(invoice.getId())).withSelfRel(),
                 linkTo(methodOn(InvoiceController.class).all()).withRel("invoices"));
 
-        // Conditional links based on state of the Invoice
+        // Conditional links based on status of the Invoice
         if (invoice.getStatus() == Status.OUTSTANDING) {
             invoiceModel.add(linkTo(methodOn(InvoiceController.class).cancel(invoice.getId())).withRel("cancel"));
             invoiceModel.add(linkTo(methodOn(InvoiceController.class).pay(invoice.getId())).withRel("pay"));
@@ -33,6 +33,6 @@ class InvoiceModelAssembler implements RepresentationModelAssembler<Invoice, Ent
     }
 
     private boolean isValid(Invoice invoice) {
-        return invoice.getId() == null || invoice.getId() == 0 || invoice.getAccount() == null || invoice.getAmount() == null || invoice.getDueDate() == null;
+        return invoice.getId() != null && invoice.getId() != 0 && invoice.getAmount() != null && invoice.getDueDate() != null;
     }
 }

@@ -2,103 +2,43 @@ package uk.ac.leedsbeckett.finance.controller;
 
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.MediaTypes;
-import org.springframework.hateoas.mediatype.problem.Problem;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uk.ac.leedsbeckett.finance.exception.InvoiceNotFoundException;
-import uk.ac.leedsbeckett.finance.model.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import uk.ac.leedsbeckett.finance.model.Invoice;
+import uk.ac.leedsbeckett.finance.service.InvoiceService;
 
 @RestController
 public
 class InvoiceController {
 
-    private final InvoiceRepository invoiceRepository;
-    private final AccountRepository accountRepository;
-    private final InvoiceModelAssembler assembler;
+    private final InvoiceService invoiceService;
 
-    InvoiceController(InvoiceRepository invoiceRepository, AccountRepository accountRepository, InvoiceModelAssembler assembler) {
-
-        this.invoiceRepository = invoiceRepository;
-        this.accountRepository = accountRepository;
-        this.assembler = assembler;
+    InvoiceController(InvoiceService invoiceService) {
+        this.invoiceService = invoiceService;
     }
 
     @GetMapping("/invoices")
     public CollectionModel<EntityModel<Invoice>> all() {
-
-        List<EntityModel<Invoice>> invoices = invoiceRepository.findAll().stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
-
-        return CollectionModel.of(invoices,
-                linkTo(methodOn(InvoiceController.class).all()).withSelfRel());
+        return invoiceService.getAllInvoices();
     }
 
     @GetMapping("/invoices/{id}")
     public EntityModel<Invoice> one(@PathVariable Long id) {
-
-        Invoice invoice = invoiceRepository.findById(id)
-                .orElseThrow(() -> new InvoiceNotFoundException(id));
-
-        return assembler.toModel(invoice);
+        return invoiceService.getInvoiceById(id);
     }
 
     @PostMapping("/invoices")
     ResponseEntity<EntityModel<Invoice>> newInvoice(@RequestBody Invoice invoice) {
-
-        invoice.setStatus(Status.OUTSTANDING);
-        invoice.setAccount(accountRepository.findAccountByStudentId(invoice.getStudentId()));
-        Invoice newInvoice = invoiceRepository.save(invoice);
-
-        return ResponseEntity
-                .created(linkTo(methodOn(InvoiceController.class).one(newInvoice.getId())).toUri())
-                .body(assembler.toModel(newInvoice));
+        return invoiceService.createNewInvoice(invoice);
     }
 
     @DeleteMapping("/invoices/{id}/cancel")
     public ResponseEntity<?> cancel(@PathVariable Long id) {
-
-        Invoice invoice = invoiceRepository.findById(id)
-                .orElseThrow(() -> new InvoiceNotFoundException(id));
-
-        if (invoice.getStatus() == Status.OUTSTANDING) {
-            invoice.setStatus(Status.CANCELLED);
-            return ResponseEntity.ok(assembler.toModel(invoiceRepository.save(invoice)));
-        }
-
-        return ResponseEntity
-                .status(HttpStatus.METHOD_NOT_ALLOWED)
-                .header(HttpHeaders.CONTENT_TYPE, MediaTypes.HTTP_PROBLEM_DETAILS_JSON_VALUE)
-                .body(Problem.create()
-                        .withTitle("Method not allowed")
-                        .withDetail("You can't cancel an invoice that is in the " + invoice.getStatus() + " status"));
+        return invoiceService.cancel(id);
     }
 
     @PutMapping("/invoices/{id}/pay")
     public ResponseEntity<?> pay(@PathVariable Long id) {
-
-        Invoice invoice = invoiceRepository.findById(id)
-                .orElseThrow(() -> new InvoiceNotFoundException(id));
-
-        if (invoice.getStatus() == Status.OUTSTANDING) {
-            invoice.setStatus(Status.PAID);
-            return ResponseEntity.ok(assembler.toModel(invoiceRepository.save(invoice)));
-        }
-
-        return ResponseEntity
-                .status(HttpStatus.METHOD_NOT_ALLOWED)
-                .header(HttpHeaders.CONTENT_TYPE, MediaTypes.HTTP_PROBLEM_DETAILS_JSON_VALUE)
-                .body(Problem.create()
-                        .withTitle("Method not allowed")
-                        .withDetail("You can't pay an invoice that is in the " + invoice.getStatus() + " status"));
+        return invoiceService.pay(id);
     }
 }

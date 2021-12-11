@@ -42,11 +42,10 @@ public class Invoice {
     public Invoice() {
     }
 
-    public Invoice(Double amount, LocalDate dueDate, Type type, Status status, Account account) {
+    public Invoice(Double amount, LocalDate dueDate, Type type, Account account) {
         this.amount = amount;
         this.dueDate = dueDate;
         this.type = type;
-        this.status = status;
         this.account = account;
     }
 

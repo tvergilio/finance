@@ -34,7 +34,7 @@ class InvoiceModelAssemblerTest {
         Double amount = 10.5;
         Long invoiceId = 1L;
         Account account = new Account(studentId);
-        invoice = new Invoice(amount, dueDate, invoiceType, Status.OUTSTANDING, account);
+        invoice = new Invoice(amount, dueDate, invoiceType, account);
         account.setId(accountId);
         invoice.setId(invoiceId);
     }
@@ -60,7 +60,8 @@ class InvoiceModelAssemblerTest {
     }
 
     @Test
-    void testToModel_withValidOutstandingInvoice_ReturnsExpectedEntityModel() throws Exception {
+    void testToModel_withValidOutstandingInvoice_ReturnsExpectedEntityModel() {
+        invoice.setStatus(Status.OUTSTANDING);
         EntityModel<Invoice> result = invoiceModelAssembler.toModel(invoice);
         assertThat(invoice.equals(result.getContent()));
         assertThat(result.getLinks().hasSize(4));
@@ -71,42 +72,35 @@ class InvoiceModelAssemblerTest {
     }
 
     @Test
-    void testToModel_withIdNull_ThrowsException() throws Exception {
+    void testToModel_withIdNull_ThrowsException() {
         invoice.setId(null);
         assertThrows(InvoiceNotValidException.class, () -> invoiceModelAssembler.toModel(invoice),
                 "Exception was not thrown.");
     }
 
     @Test
-    void testToModel_withIdZero_ThrowsException() throws Exception {
+    void testToModel_withIdZero_ThrowsException() {
         invoice.setId(0L);
         assertThrows(InvoiceNotValidException.class, () -> invoiceModelAssembler.toModel(invoice),
                 "Exception was not thrown.");
     }
 
     @Test
-    void testToModel_withNoAccount_ThrowsException() throws Exception {
-        invoice.setAccount(null);
-        assertThrows(InvoiceNotValidException.class, () -> invoiceModelAssembler.toModel(invoice),
-                "Exception was not thrown.");
-    }
-
-    @Test
-    void testToModel_withNoDueDate_ThrowsException() throws Exception {
+    void testToModel_withNoDueDate_ThrowsException() {
         invoice.setDueDate(null);
         assertThrows(InvoiceNotValidException.class, () -> invoiceModelAssembler.toModel(invoice),
                 "Exception was not thrown.");
     }
 
     @Test
-    void testToModel_withNoAmount_ThrowsException() throws Exception {
+    void testToModel_withNoAmount_ThrowsException() {
         invoice.setAmount(null);
         assertThrows(InvoiceNotValidException.class, () -> invoiceModelAssembler.toModel(invoice),
                 "Exception was not thrown.");
     }
 
     @Test
-    void testToModel_withNullArgument_ThrowsException() throws Exception {
+    void testToModel_withNullArgument_ThrowsException() {
         assertThrows(RuntimeException.class, () -> invoiceModelAssembler.toModel(null),
                 "Exception was not thrown.");
     }
