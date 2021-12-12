@@ -100,7 +100,7 @@ class InvoiceServiceTest {
     }
 
     @Test
-    void testGetInvoiceById_withValidID_ReturnsExistingInvoice() {
+    void testGetInvoiceById_withValidID_returnsExistingInvoice() {
         EntityModel<Invoice> result = invoiceService.getInvoiceById(invoiceId);
         assertEquals(invoiceId, result.getContent().getId());
         verify(invoiceModelAssembler, times(1)).toModel(invoice);
@@ -121,7 +121,7 @@ class InvoiceServiceTest {
     }
 
     @Test
-    void testGetInvoiceByReference_withValidReference_ReturnsExistingInvoice() {
+    void testGetInvoiceByReference_withValidReference_returnsExistingInvoice() {
         EntityModel<Invoice> result = invoiceService.getInvoiceByReference(invoiceReference);
         assertEquals(invoiceReference, result.getContent().getReference());
         verify(invoiceModelAssembler, times(1)).toModel(invoice);
@@ -162,7 +162,7 @@ class InvoiceServiceTest {
     }
 
     @Test
-    void testCancelInvoice_withValidId_CancelsInvoice() {
+    void testCancelInvoice_withValidId_cancelsInvoice() {
         invoice.setStatus(Status.OUTSTANDING);
         ResponseEntity<?> result = invoiceService.cancel(invoiceReference);
         invoice.setStatus(Status.CANCELLED);
@@ -174,7 +174,7 @@ class InvoiceServiceTest {
     }
 
     @Test
-    void testPayInvoice_withValidId_CancelsInvoice() {
+    void testPayInvoice_withValidId_paysInvoice() {
         invoice.setStatus(Status.OUTSTANDING);
         ResponseEntity<?> result = invoiceService.pay(invoiceReference);
         invoice.setStatus(Status.PAID);
@@ -183,6 +183,27 @@ class InvoiceServiceTest {
                 linkTo(methodOn(InvoiceController.class).all()).withRel("invoices"));
         assertEquals(invoiceEntityModel, result.getBody());
         verify(invoiceModelAssembler, times(1)).toModel(invoice);
+    }
+
+    @Test
+    void testProcessPayment_withStatusOutstanding_updatesInvoice() {
+        invoice.setStatus(Status.OUTSTANDING);
+        Invoice result = invoiceService.processPayment(invoiceReference);
+        assertEquals(Status.PAID, result.getStatus());
+    }
+
+    @Test
+    void testProcessPayment_withStatusPaid_throwsUnsupportedOperationException() {
+        invoice.setStatus(Status.PAID);
+        assertThrows(UnsupportedOperationException.class, () ->  invoiceService.processPayment(invoiceReference),
+                "Exception was not thrown.");
+    }
+
+    @Test
+    void testProcessPayment_withStatusCancelled_throwsUnsupportedOperationException() {
+        invoice.setStatus(Status.CANCELLED);
+        assertThrows(UnsupportedOperationException.class, () ->  invoiceService.processPayment(invoiceReference),
+                "Exception was not thrown.");
     }
 
     @AfterEach

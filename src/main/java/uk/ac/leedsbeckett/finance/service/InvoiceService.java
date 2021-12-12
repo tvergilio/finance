@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.ac.leedsbeckett.finance.controller.InvoiceController;
-import uk.ac.leedsbeckett.finance.exception.AccountNotFoundException;
 import uk.ac.leedsbeckett.finance.exception.InvoiceNotFoundException;
 import uk.ac.leedsbeckett.finance.exception.InvoiceNotValidException;
 import uk.ac.leedsbeckett.finance.model.*;
@@ -82,23 +81,18 @@ public class InvoiceService {
     }
 
     public ResponseEntity<?> pay(String reference) {
-        Invoice invoice = invoiceRepository.findInvoiceByReference(reference);
-
-        if (invoice == null) {
-            throw new InvoiceNotFoundException(reference);
+        Invoice invoice;
+        try {
+            invoice = processPayment(reference);
+        } catch (UnsupportedOperationException exception) {
+            return ResponseEntity
+                    .status(HttpStatus.METHOD_NOT_ALLOWED)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaTypes.HTTP_PROBLEM_DETAILS_JSON_VALUE)
+                    .body(Problem.create()
+                            .withTitle("Method not allowed")
+                            .withDetail(exception.getMessage()));
         }
-
-        if (invoice.getStatus() == Status.OUTSTANDING) {
-            invoice.setStatus(Status.PAID);
             return ResponseEntity.ok(assembler.toModel(invoiceRepository.save(invoice)));
-        }
-
-        return ResponseEntity
-                .status(HttpStatus.METHOD_NOT_ALLOWED)
-                .header(HttpHeaders.CONTENT_TYPE, MediaTypes.HTTP_PROBLEM_DETAILS_JSON_VALUE)
-                .body(Problem.create()
-                        .withTitle("Method not allowed")
-                        .withDetail("You can't pay an invoice that is in the " + invoice.getStatus() + " status"));
     }
 
     public EntityModel<Invoice> getInvoiceByReference(String reference) {
@@ -115,6 +109,21 @@ public class InvoiceService {
                 invoice.getStudentId() != null &&
                 !invoice.getStudentId().isEmpty() &&
                 accountRepository.findAccountByStudentId(invoice.getStudentId()) != null;
+    }
+
+    public Invoice processPayment(String reference) throws UnsupportedOperationException {
+        Invoice invoice = invoiceRepository.findInvoiceByReference(reference);
+
+        if (invoice == null) {
+            throw new InvoiceNotFoundException(reference);
+        }
+
+        if (invoice.getStatus() == Status.OUTSTANDING) {
+            invoice.setStatus(Status.PAID);
+            return invoiceRepository.save(invoice);
+        } else {
+            throw new UnsupportedOperationException("You can't pay an invoice that is in the " + invoice.getStatus() + " status");
+        }
     }
 
 }

@@ -22,7 +22,7 @@ services:
       retries: 10
 
   app:
-    image: tvergilio/finance:1.0
+    image: tvergilio/finance:1.1
     environment:
       spring.datasource.url: jdbc:mariadb://db:3306/${DB_NAME}
       spring.datasource.username: ${DB_APPLICATION_USER}
