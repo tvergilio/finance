@@ -12,7 +12,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"amount\": 5.00,\r\n    \"dueDate\": \"2021-11-06T10:05:23.081168\",\r\n    \"type\": \"LIBRARY_FINE\",\r\n    \"account\": {\r\n        \"studentId\": \"c7465688\"\r\n    }\r\n}",
+					"raw": "{\r\n    \"amount\": 5.00,\r\n    \"dueDate\": \"2021-11-06\",\r\n    \"type\": \"LIBRARY_FINE\",\r\n    \"account\": {\r\n        \"studentId\": \"c7465688\"\r\n    }\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

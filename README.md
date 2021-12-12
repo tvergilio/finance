@@ -19,13 +19,8 @@ This is a simple microservices-based application which exposes a RESTful API. It
 [![Watch the demo.](http://img.youtube.com/vi/zN4qPE-a5Xs/hqdefault.jpg)](https://youtu.be/zN4qPE-a5Xs)
 
 ## Run using Docker Compose
-1. Create a file called `.env` inside the `finance` directory and enter the following text (in separate lines):<br/>
-   `DB_APPLICATION_USER=XXXXXXXXX`<br/>
-   `DB_APPLICATION_PASSWORD=XXXXXXXXX`<br/>
-   `DB_ROOT_PASSWORD=XXXXXXXXX`</br>
-   `DB_NAME=XXXXXXXXX`</br>
-   (replace the XXXXXs)
-3. From the `finance` directory, run the app and db services:<br/>
+1. Rename the `.env.example` file inside the `finance` directory to `.env`:<br/>
+2. From the `finance` directory, run the app and db services:<br/>
    `docker-compose up`
 
 ## Test using Postman
