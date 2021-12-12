@@ -50,12 +50,6 @@ public class InvoiceService {
     public ResponseEntity<?> createNewInvoice(Invoice invoice) {
         if (!isInvoiceProcessable(invoice)) {
             throw new InvoiceNotValidException("You can't create an invoice without a valid student ID.");
-//            return ResponseEntity
-//                    .status(HttpStatus.UNPROCESSABLE_ENTITY)
-//                    .header(HttpHeaders.CONTENT_TYPE, MediaTypes.HTTP_PROBLEM_DETAILS_JSON_VALUE)
-//                    .body(Problem.create()
-//                            .withTitle("Request cannot be processed.")
-//                            .withDetail("You can't create an invoice without a valid student ID."));
         }
         invoice.setStatus(Status.OUTSTANDING);
         invoice.setAccount(accountRepository.findAccountByStudentId(invoice.getStudentId()));
@@ -67,9 +61,12 @@ public class InvoiceService {
                 .body(assembler.toModel(newInvoice));
     }
 
-    public ResponseEntity<?> cancel(Long id) {
-        Invoice invoice = invoiceRepository.findById(id)
-                .orElseThrow(() -> new InvoiceNotFoundException(id));
+    public ResponseEntity<?> cancel(String reference) {
+        Invoice invoice = invoiceRepository.findInvoiceByReference(reference);
+
+        if (invoice == null) {
+            throw new InvoiceNotFoundException(reference);
+        }
 
         if (invoice.getStatus() == Status.OUTSTANDING) {
             invoice.setStatus(Status.CANCELLED);
@@ -84,9 +81,12 @@ public class InvoiceService {
                         .withDetail("You can't cancel an invoice that is in the " + invoice.getStatus() + " status"));
     }
 
-    public ResponseEntity<?> pay(Long id) {
-        Invoice invoice = invoiceRepository.findById(id)
-                .orElseThrow(() -> new InvoiceNotFoundException(id));
+    public ResponseEntity<?> pay(String reference) {
+        Invoice invoice = invoiceRepository.findInvoiceByReference(reference);
+
+        if (invoice == null) {
+            throw new InvoiceNotFoundException(reference);
+        }
 
         if (invoice.getStatus() == Status.OUTSTANDING) {
             invoice.setStatus(Status.PAID);

@@ -140,7 +140,7 @@ class AccountServiceTest {
     @Test
     void testCreateNewAccount_withValidData_createsAccount() {
         EntityModel<Account> accountEntityModel = EntityModel.of(account,
-                linkTo(methodOn(AccountController.class).one(account.getId())).withSelfRel(),
+                linkTo(methodOn(AccountController.class).getStudentAccount(account.getStudentId())).withSelfRel(),
                 linkTo(methodOn(AccountController.class).all()).withRel("accounts"));
         assertEquals(accountEntityModel, accountService.createNewAccount(account).getBody());
         verify(accountModelAssembler, times(1)).toModel(account);

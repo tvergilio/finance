@@ -37,13 +37,13 @@ class InvoiceController {
         return invoiceService.createNewInvoice(invoice);
     }
 
-    @DeleteMapping("/invoices/{id}/cancel")
-    public ResponseEntity<?> cancel(@PathVariable Long id) {
-        return invoiceService.cancel(id);
+    @DeleteMapping("/invoices/{reference}/cancel")
+    public ResponseEntity<?> cancel(@PathVariable String reference) {
+        return invoiceService.cancel(reference);
     }
 
-    @PutMapping("/invoices/{id}/pay")
-    public ResponseEntity<?> pay(@PathVariable Long id) {
-        return invoiceService.pay(id);
+    @PutMapping("/invoices/{reference}/pay")
+    public ResponseEntity<?> pay(@PathVariable String reference) {
+        return invoiceService.pay(reference);
     }
 }

@@ -8,6 +8,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Locale;
 
 @Entity
 @Data
@@ -54,7 +55,9 @@ public class Invoice {
     }
 
     public void populateReference() {
-        this.reference = RandomStringUtils.random(8, true, true);
+        if (this.reference == null) {
+            this.reference = RandomStringUtils.random(8, true, true).toUpperCase(Locale.UK);
+        }
     }
 
 }

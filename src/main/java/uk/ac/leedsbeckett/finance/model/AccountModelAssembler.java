@@ -19,7 +19,7 @@ class AccountModelAssembler implements RepresentationModelAssembler<Account, Ent
             throw new AccountNotValidException();
         }
         return EntityModel.of(account,
-                linkTo(methodOn(AccountController.class).one(account.getId())).withSelfRel(),
+                linkTo(methodOn(AccountController.class).getStudentAccount(account.getStudentId())).withSelfRel(),
                 linkTo(methodOn(AccountController.class).all()).withRel("accounts"));
     }
 

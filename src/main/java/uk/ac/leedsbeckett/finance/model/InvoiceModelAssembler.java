@@ -20,13 +20,13 @@ class InvoiceModelAssembler implements RepresentationModelAssembler<Invoice, Ent
         }
 
         EntityModel<Invoice> invoiceModel = EntityModel.of(invoice,
-                linkTo(methodOn(InvoiceController.class).one(invoice.getId())).withSelfRel(),
+                linkTo(methodOn(InvoiceController.class).one(invoice.getReference())).withSelfRel(),
                 linkTo(methodOn(InvoiceController.class).all()).withRel("invoices"));
 
         // Conditional links based on status of the Invoice
         if (invoice.getStatus() == Status.OUTSTANDING) {
-            invoiceModel.add(linkTo(methodOn(InvoiceController.class).cancel(invoice.getId())).withRel("cancel"));
-            invoiceModel.add(linkTo(methodOn(InvoiceController.class).pay(invoice.getId())).withRel("pay"));
+            invoiceModel.add(linkTo(methodOn(InvoiceController.class).cancel(invoice.getReference())).withRel("cancel"));
+            invoiceModel.add(linkTo(methodOn(InvoiceController.class).pay(invoice.getReference())).withRel("pay"));
         }
 
         return invoiceModel;

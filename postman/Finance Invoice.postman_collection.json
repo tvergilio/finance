@@ -54,14 +54,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8081/invoices/1/pay",
+					"raw": "localhost:8081/invoices/ABCD1234/pay",
 					"host": [
 						"localhost"
 					],
 					"port": "8081",
 					"path": [
 						"invoices",
-						"1",
+						"ABCD1234",
 						"pay"
 					]
 				}
@@ -89,14 +89,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8081/invoices/5/cancel",
+					"raw": "localhost:8081/invoices/ZZ666666/cancel",
 					"host": [
 						"localhost"
 					],
 					"port": "8081",
 					"path": [
 						"invoices",
-						"5",
+						"ZZ666666",
 						"cancel"
 					],
 					"query": [

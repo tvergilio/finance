@@ -153,10 +153,10 @@ class InvoiceServiceTest {
     @Test
     void testCreateNewInvoice_withValidData_createsInvoice() {
         EntityModel<Invoice> invoiceEntityModel = EntityModel.of(invoice,
-                linkTo(methodOn(InvoiceController.class).one(invoice.getId())).withSelfRel(),
+                linkTo(methodOn(InvoiceController.class).one(invoice.getReference())).withSelfRel(),
                 linkTo(methodOn(InvoiceController.class).all()).withRel("invoices"),
-                linkTo(methodOn(InvoiceController.class).cancel(invoice.getId())).withRel("cancel"),
-                linkTo(methodOn(InvoiceController.class).pay(invoice.getId())).withRel("pay"));
+                linkTo(methodOn(InvoiceController.class).cancel(invoice.getReference())).withRel("cancel"),
+                linkTo(methodOn(InvoiceController.class).pay(invoice.getReference())).withRel("pay"));
         assertEquals(invoiceEntityModel, invoiceService.createNewInvoice(invoice).getBody());
         verify(invoiceModelAssembler, times(1)).toModel(invoice);
     }
@@ -164,10 +164,10 @@ class InvoiceServiceTest {
     @Test
     void testCancelInvoice_withValidId_CancelsInvoice() {
         invoice.setStatus(Status.OUTSTANDING);
-        ResponseEntity<?> result = invoiceService.cancel(invoiceId);
+        ResponseEntity<?> result = invoiceService.cancel(invoiceReference);
         invoice.setStatus(Status.CANCELLED);
         EntityModel<Invoice> invoiceEntityModel = EntityModel.of(invoice,
-                linkTo(methodOn(InvoiceController.class).one(invoice.getId())).withSelfRel(),
+                linkTo(methodOn(InvoiceController.class).one(invoice.getReference())).withSelfRel(),
                 linkTo(methodOn(InvoiceController.class).all()).withRel("invoices"));
         assertEquals(invoiceEntityModel, result.getBody());
         verify(invoiceModelAssembler, times(1)).toModel(invoice);
@@ -176,10 +176,10 @@ class InvoiceServiceTest {
     @Test
     void testPayInvoice_withValidId_CancelsInvoice() {
         invoice.setStatus(Status.OUTSTANDING);
-        ResponseEntity<?> result = invoiceService.pay(invoiceId);
+        ResponseEntity<?> result = invoiceService.pay(invoiceReference);
         invoice.setStatus(Status.PAID);
         EntityModel<Invoice> invoiceEntityModel = EntityModel.of(invoice,
-                linkTo(methodOn(InvoiceController.class).one(invoice.getId())).withSelfRel(),
+                linkTo(methodOn(InvoiceController.class).one(invoice.getReference())).withSelfRel(),
                 linkTo(methodOn(InvoiceController.class).all()).withRel("invoices"));
         assertEquals(invoiceEntityModel, result.getBody());
         verify(invoiceModelAssembler, times(1)).toModel(invoice);
