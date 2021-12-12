@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.ToString;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -15,6 +16,8 @@ public class Invoice {
     private @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     Long id;
+    @Column(unique = true)
+    private String reference;
     private Double amount;
     private LocalDate dueDate;
     private Type type;
@@ -47,6 +50,11 @@ public class Invoice {
         this.dueDate = dueDate;
         this.type = type;
         this.account = account;
+        populateReference();
+    }
+
+    public void populateReference() {
+        this.reference = RandomStringUtils.random(8, true, true);
     }
 
 }

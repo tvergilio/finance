@@ -53,6 +53,7 @@ class InvoiceServiceTest {
     private final Type type = Type.TUITION_FEES;
     private final Type anotherType = Type.LIBRARY_FINE;
     private final Long invoiceId = 1L;
+    private final String invoiceReference = "1234ABCD";
     private Account account;
     private Account anotherAccount;
     private Invoice invoice;
@@ -82,10 +83,13 @@ class InvoiceServiceTest {
         anotherAccount.setId(anotherAccountId);
         invoice = new Invoice(amount, dueDate, type, account);
         invoice.setId(invoiceId);
+        invoice.setReference(invoiceReference);
         anotherInvoice = new Invoice(anotherAmount, anotherDueDate, anotherType, anotherAccount);
         anotherInvoice.setId(anotherInvoiceId);
         Mockito.when(invoiceRepository.findById(invoiceId))
                 .thenReturn(Optional.of(invoice));
+        Mockito.when(invoiceRepository.findInvoiceByReference(invoiceReference))
+                .thenReturn(invoice);
         Mockito.when(invoiceRepository.findAll())
                 .thenReturn(Arrays.asList(invoice, anotherInvoice));
         Mockito.when(invoiceRepository.save(invoice))
@@ -112,6 +116,27 @@ class InvoiceServiceTest {
     @Test
     void testGetInvoiceById_withNullID_throwsException() {
         assertThrows(InvoiceNotFoundException.class, () -> invoiceService.getInvoiceById(null),
+                "Exception was not thrown.");
+        verify(invoiceModelAssembler, times(0)).toModel(any());
+    }
+
+    @Test
+    void testGetInvoiceByReference_withValidReference_ReturnsExistingInvoice() {
+        EntityModel<Invoice> result = invoiceService.getInvoiceByReference(invoiceReference);
+        assertEquals(invoiceReference, result.getContent().getReference());
+        verify(invoiceModelAssembler, times(1)).toModel(invoice);
+    }
+
+    @Test
+    void testGetInvoiceByReference_withInValidReference_throwsException() {
+        assertThrows(InvoiceNotFoundException.class, () -> invoiceService.getInvoiceByReference(""),
+                "Exception was not thrown.");
+        verify(invoiceModelAssembler, times(0)).toModel(any());
+    }
+
+    @Test
+    void testGetInvoiceByReference_withNullReference_throwsException() {
+        assertThrows(InvoiceNotFoundException.class, () -> invoiceService.getInvoiceByReference(null),
                 "Exception was not thrown.");
         verify(invoiceModelAssembler, times(0)).toModel(any());
     }

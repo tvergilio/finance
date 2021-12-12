@@ -47,16 +47,19 @@ public class InvoiceService {
         return CollectionModel.of(invoices, linkTo(methodOn(InvoiceController.class).all()).withSelfRel());
     }
 
-    public ResponseEntity<EntityModel<Invoice>> createNewInvoice(Invoice invoice) {
-        if (invoice.getStudentId() == null || invoice.getStudentId().isEmpty()) {
-            throw new InvoiceNotValidException();
-        }
-        Account account = accountRepository.findAccountByStudentId(invoice.getStudentId());
-        if (account == null) {
-            throw new AccountNotFoundException(invoice.getStudentId());
+    public ResponseEntity<?> createNewInvoice(Invoice invoice) {
+        if (!isInvoiceProcessable(invoice)) {
+            throw new InvoiceNotValidException("You can't create an invoice without a valid student ID.");
+//            return ResponseEntity
+//                    .status(HttpStatus.UNPROCESSABLE_ENTITY)
+//                    .header(HttpHeaders.CONTENT_TYPE, MediaTypes.HTTP_PROBLEM_DETAILS_JSON_VALUE)
+//                    .body(Problem.create()
+//                            .withTitle("Request cannot be processed.")
+//                            .withDetail("You can't create an invoice without a valid student ID."));
         }
         invoice.setStatus(Status.OUTSTANDING);
         invoice.setAccount(accountRepository.findAccountByStudentId(invoice.getStudentId()));
+        invoice.populateReference();
         Invoice newInvoice = invoiceRepository.save(invoice);
 
         return ResponseEntity
@@ -96,6 +99,22 @@ public class InvoiceService {
                 .body(Problem.create()
                         .withTitle("Method not allowed")
                         .withDetail("You can't pay an invoice that is in the " + invoice.getStatus() + " status"));
+    }
+
+    public EntityModel<Invoice> getInvoiceByReference(String reference) {
+        Invoice invoice = invoiceRepository.findInvoiceByReference(reference);
+        if (invoice == null) {
+            throw new InvoiceNotFoundException(reference);
+        }
+        return assembler.toModel(invoice);
+    }
+
+    private boolean isInvoiceProcessable(Invoice invoice) {
+        return invoice != null &&
+                invoice.getAccount() != null &&
+                invoice.getStudentId() != null &&
+                !invoice.getStudentId().isEmpty() &&
+                accountRepository.findAccountByStudentId(invoice.getStudentId()) != null;
     }
 
 }

@@ -54,14 +54,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8081/invoices/6/pay",
+					"raw": "localhost:8081/invoices/1/pay",
 					"host": [
 						"localhost"
 					],
 					"port": "8081",
 					"path": [
 						"invoices",
-						"6",
+						"1",
 						"pay"
 					]
 				}
@@ -89,20 +89,20 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8081/invoices/7/cancel",
+					"raw": "localhost:8081/invoices/5/cancel",
 					"host": [
 						"localhost"
 					],
 					"port": "8081",
 					"path": [
 						"invoices",
-						"7",
+						"5",
 						"cancel"
 					],
 					"query": [
 						{
 							"key": "",
-							"value": null,
+							"value": "",
 							"disabled": true
 						}
 					]
@@ -142,7 +142,27 @@
 					"port": "8081",
 					"path": [
 						"invoices",
-						""
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get invoice by reference",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/invoices/reference/ZZ666666",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"invoices",
+						"reference",
+						"ZZ666666"
 					]
 				}
 			},

@@ -86,6 +86,20 @@ class InvoiceModelAssemblerTest {
     }
 
     @Test
+    void testToModel_withReferenceNull_ThrowsException() {
+        invoice.setReference(null);
+        assertThrows(InvoiceNotValidException.class, () -> invoiceModelAssembler.toModel(invoice),
+                "Exception was not thrown.");
+    }
+
+    @Test
+    void testToModel_withReferenceEmpty_ThrowsException() {
+        invoice.setReference("");
+        assertThrows(InvoiceNotValidException.class, () -> invoiceModelAssembler.toModel(invoice),
+                "Exception was not thrown.");
+    }
+
+    @Test
     void testToModel_withNoDueDate_ThrowsException() {
         invoice.setDueDate(null);
         assertThrows(InvoiceNotValidException.class, () -> invoiceModelAssembler.toModel(invoice),

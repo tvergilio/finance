@@ -27,8 +27,13 @@ class InvoiceController {
         return invoiceService.getInvoiceById(id);
     }
 
+    @GetMapping("/invoices/reference/{reference}")
+    public EntityModel<Invoice> one(@PathVariable String reference) {
+        return invoiceService.getInvoiceByReference(reference);
+    }
+
     @PostMapping("/invoices")
-    ResponseEntity<EntityModel<Invoice>> newInvoice(@RequestBody Invoice invoice) {
+    ResponseEntity<?> newInvoice(@RequestBody Invoice invoice) {
         return invoiceService.createNewInvoice(invoice);
     }
 

@@ -33,6 +33,11 @@ class InvoiceModelAssembler implements RepresentationModelAssembler<Invoice, Ent
     }
 
     private boolean isValid(Invoice invoice) {
-        return invoice.getId() != null && invoice.getId() != 0 && invoice.getAmount() != null && invoice.getDueDate() != null;
+        return invoice.getId() != null
+                && invoice.getId() != 0
+                && invoice.getReference() != null
+                && !invoice.getReference().isEmpty()
+                && invoice.getAmount() != null
+                && invoice.getDueDate() != null;
     }
 }

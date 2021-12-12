@@ -29,6 +29,7 @@ create or replace table invoice
 (
     id         bigint auto_increment
         primary key,
+    reference varchar(255) unique null,
     amount     double   null,
     due_date   datetime null,
     status     int      null,
@@ -38,11 +39,11 @@ create or replace table invoice
         foreign key (account_fk) references account (id)
 );
 
-INSERT INTO finance.invoice (id, amount, due_date, status, type, account_fk) VALUES (1, 350.4, '2022-01-06 09:29:04', 0, 1, 1);
-INSERT INTO finance.invoice (id, amount, due_date, status, type, account_fk) VALUES (2, 810.5, '2021-10-07 09:29:04', 1, 1, 2);
-INSERT INTO finance.invoice (id, amount, due_date, status, type, account_fk) VALUES (3, 37.85, '2021-11-07 09:29:04', 2, 0, 1);
-INSERT INTO finance.invoice (id, amount, due_date, status, type, account_fk) VALUES (4, 1000, '2021-03-07 09:29:04', 1, 1, 1);
-INSERT INTO finance.invoice (id, amount, due_date, status, type, account_fk) VALUES (5, 15.6, '2021-12-22 09:29:04', 0, 0, 2);
+INSERT INTO finance.invoice (id, reference, amount, due_date, status, type, account_fk) VALUES (1, 'ABCD1234', 350.4, '2022-01-06 09:29:04', 0, 1, 1);
+INSERT INTO finance.invoice (id, reference, amount, due_date, status, type, account_fk) VALUES (2, 'AABB1122', 30.0, '2021-10-07 09:29:04', 1, 1, 2);
+INSERT INTO finance.invoice (id, reference, amount, due_date, status, type, account_fk) VALUES (3, 'CCDD3344', 37.85, '2021-11-07 09:29:04', 2, 0, 1);
+INSERT INTO finance.invoice (id, reference, amount, due_date, status, type, account_fk) VALUES (4, '99EEFF22', 1000, '2021-03-07 09:29:04', 1, 1, 1);
+INSERT INTO finance.invoice (id, reference, amount, due_date, status, type, account_fk) VALUES (5, 'ZZ666666', 15.6, '2021-12-22 09:29:04', 0, 0, 2);
 
 create or replace table account_invoice_list
 (

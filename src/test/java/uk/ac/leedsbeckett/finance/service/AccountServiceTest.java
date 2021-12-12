@@ -1,6 +1,5 @@
 package uk.ac.leedsbeckett.finance.service;
 
-import org.hibernate.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,9 +48,7 @@ class AccountServiceTest {
     }
 
     private final String studentId = "c7777777";
-    private final String anotherStudentId = "c3333333";
     private final Long id = 1L;
-    private final Long anotherId = 2L;
     private Account account;
     private Account anotherAccount;
     @MockBean
@@ -67,7 +64,9 @@ class AccountServiceTest {
     public void setUp() {
         account = new Account(studentId);
         account.setId(id);
+        String anotherStudentId = "c3333333";
         anotherAccount = new Account(anotherStudentId);
+        Long anotherId = 2L;
         anotherAccount.setId(anotherId);
         Mockito.when(accountRepository.findAccountByStudentId(studentId))
                 .thenReturn(account);
@@ -81,56 +80,56 @@ class AccountServiceTest {
     }
 
     @Test
-    void testGetAccountByStudentId_withValidID_ReturnsExistingAccount() throws Exception {
+    void testGetAccountByStudentId_withValidID_ReturnsExistingAccount() {
         EntityModel<Account> result = accountService.getAccountByStudentId(studentId);
         assertThat(studentId.equals(result.getContent().getStudentId()));
         verify(accountModelAssembler, times(1)).toModel(account);
     }
 
     @Test
-    void testGetAccountByStudentId_withInValidID_throwsException() throws Exception {
-        assertThrows(ObjectNotFoundException.class, () -> accountService.getAccountByStudentId("dummy"),
+    void testGetAccountByStudentId_withInValidID_throwsException() {
+        assertThrows(AccountNotFoundException.class, () -> accountService.getAccountByStudentId("dummy"),
                 "Exception was not thrown.");
         verify(accountModelAssembler, times(0)).toModel(any());
     }
 
     @Test
-    void testGetAccountByStudentId_withEmptyID_throwsException() throws Exception {
-        assertThrows(ObjectNotFoundException.class, () -> accountService.getAccountByStudentId(""),
+    void testGetAccountByStudentId_withEmptyID_throwsException() {
+        assertThrows(AccountNotFoundException.class, () -> accountService.getAccountByStudentId(""),
                 "Exception was not thrown.");
         verify(accountModelAssembler, times(0)).toModel(any());
     }
 
     @Test
-    void testGetAccountByStudentId_withNullID_throwsException() throws Exception {
-        assertThrows(ObjectNotFoundException.class, () -> accountService.getAccountByStudentId(null),
+    void testGetAccountByStudentId_withNullID_throwsException() {
+        assertThrows(AccountNotFoundException.class, () -> accountService.getAccountByStudentId(null),
                 "Exception was not thrown.");
         verify(accountModelAssembler, times(0)).toModel(any());
     }
 
     @Test
-    void testGetAccountById_withValidID_ReturnsExistingAccount() throws Exception {
+    void testGetAccountById_withValidID_ReturnsExistingAccount() {
         EntityModel<Account> result = accountService.getAccountById(id);
         assertEquals(id, result.getContent().getId());
         verify(accountModelAssembler, times(1)).toModel(account);
     }
 
     @Test
-    void testGetAccountById_withInValidID_throwsException() throws Exception {
+    void testGetAccountById_withInValidID_throwsException() {
         assertThrows(AccountNotFoundException.class, () -> accountService.getAccountById(0L),
                 "Exception was not thrown.");
         verify(accountModelAssembler, times(0)).toModel(any());
     }
 
     @Test
-    void testGetAccountById_withNullID_throwsException() throws Exception {
+    void testGetAccountById_withNullID_throwsException() {
         assertThrows(AccountNotFoundException.class, () -> accountService.getAccountById(null),
                 "Exception was not thrown.");
         verify(accountModelAssembler, times(0)).toModel(any());
     }
 
     @Test
-    void testGetAllAccounts_returnsExistingAccounts() throws Exception {
+    void testGetAllAccounts_returnsExistingAccounts() {
         CollectionModel<EntityModel<Account>> result = accountService.getAllAccounts();
         assertEquals(2, result.getContent().size());
         assertThat(result.getContent().containsAll(Arrays.asList(account, anotherAccount)));
@@ -139,7 +138,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void testCreateNewAccount_withValidData_createsAccount() throws Exception {
+    void testCreateNewAccount_withValidData_createsAccount() {
         EntityModel<Account> accountEntityModel = EntityModel.of(account,
                 linkTo(methodOn(AccountController.class).one(account.getId())).withSelfRel(),
                 linkTo(methodOn(AccountController.class).all()).withRel("accounts"));
@@ -148,7 +147,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void testDeleteAccount_withValidId_deletesAccount() throws Exception {
+    void testDeleteAccount_withValidId_deletesAccount() {
         accountService.deleteAccount(id);
         verify(accountRepository, times(1)).deleteById(id);
         verify(accountModelAssembler, times(0)).toModel(any());

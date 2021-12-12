@@ -1,6 +1,6 @@
 package uk.ac.leedsbeckett.finance.service;
 
-import org.hibernate.ObjectNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -8,8 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.ac.leedsbeckett.finance.controller.AccountController;
 import uk.ac.leedsbeckett.finance.exception.AccountNotFoundException;
+import uk.ac.leedsbeckett.finance.exception.AccountNotValidException;
 import uk.ac.leedsbeckett.finance.model.*;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,13 +49,19 @@ public class AccountService {
     public EntityModel<Account> getAccountByStudentId(String studentId) {
         Account studentAccount = accountRepository.findAccountByStudentId(studentId);
         if (studentAccount == null) {
-            throw new ObjectNotFoundException(studentId, "studentAccount");
+            throw new AccountNotFoundException(studentId);
         }
         return assembler.toModel(populateOutstandingBalance(studentAccount));
     }
 
     public ResponseEntity<?> createNewAccount(Account newAccount) {
-        EntityModel<Account> entityModel = assembler.toModel(accountRepository.save(newAccount));
+        Account savedAccount;
+        try {
+            savedAccount = accountRepository.save(newAccount);
+        } catch (DataIntegrityViolationException e) {
+            throw new AccountNotValidException("An account already exists for student ID " + newAccount.getStudentId() + ".");
+        }
+        EntityModel<Account> entityModel = assembler.toModel(savedAccount);
         return ResponseEntity
                 .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(entityModel);
