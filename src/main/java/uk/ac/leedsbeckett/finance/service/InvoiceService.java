@@ -1,5 +1,6 @@
 package uk.ac.leedsbeckett.finance.service;
 
+import org.springframework.context.MessageSource;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.MediaTypes;
@@ -8,12 +9,15 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import uk.ac.leedsbeckett.finance.controller.InvoiceController;
 import uk.ac.leedsbeckett.finance.exception.InvoiceNotFoundException;
 import uk.ac.leedsbeckett.finance.exception.InvoiceNotValidException;
 import uk.ac.leedsbeckett.finance.model.*;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -25,11 +29,13 @@ public class InvoiceService {
     private final AccountRepository accountRepository;
     private final InvoiceModelAssembler assembler;
     private final InvoiceRepository invoiceRepository;
+    private final MessageSource messageSource;
 
-    public InvoiceService(AccountRepository accountRepository, InvoiceModelAssembler assembler, InvoiceRepository invoiceRepository) {
+    public InvoiceService(AccountRepository accountRepository, InvoiceModelAssembler assembler, InvoiceRepository invoiceRepository, MessageSource messageSource) {
         this.accountRepository = accountRepository;
         this.assembler = assembler;
         this.invoiceRepository = invoiceRepository;
+        this.messageSource = messageSource;
     }
 
     public EntityModel<Invoice> getInvoiceById(Long id) {
@@ -92,7 +98,7 @@ public class InvoiceService {
                             .withTitle("Method not allowed")
                             .withDetail(exception.getMessage()));
         }
-            return ResponseEntity.ok(assembler.toModel(invoiceRepository.save(invoice)));
+        return ResponseEntity.ok(assembler.toModel(invoiceRepository.save(invoice)));
     }
 
     public EntityModel<Invoice> getInvoiceByReference(String reference) {
@@ -126,4 +132,31 @@ public class InvoiceService {
         }
     }
 
+    public String showPortal(Model model) {
+        Invoice invoice = new Invoice();
+        model.addAttribute("invoice", invoice);
+        return "portal";
+    }
+
+    public String findInvoiceThroughPortal(Invoice invoice, BindingResult bindingResult, Model model) {
+        if (invoice == null || invoice.getReference() == null) {
+            throw new InvoiceNotFoundException();
+        }
+        if (bindingResult.hasErrors()) {
+            return "portal";
+        }
+        Invoice found = getInvoiceByReference(invoice.getReference()).getContent();
+        model.addAttribute("invoice", found);
+        return "invoice";
+    }
+
+    public String payInvoiceThroughPortal(Invoice invoice, Model model) {
+        if (invoice == null || invoice.getReference() == null) {
+            throw new InvoiceNotFoundException();
+        }
+        Invoice paidInvoice = processPayment(invoice.getReference());
+        model.addAttribute("invoice", paidInvoice);
+        model.addAttribute("message", messageSource.getMessage("invoice.paid", null, Locale.ROOT));
+        return "invoice";
+    }
 }

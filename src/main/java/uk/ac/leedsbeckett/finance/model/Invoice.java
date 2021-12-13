@@ -6,7 +6,11 @@ import lombok.Data;
 import lombok.ToString;
 import org.apache.commons.lang3.RandomStringUtils;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Locale;
 
@@ -18,6 +22,9 @@ public class Invoice {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     Long id;
     @Column(unique = true)
+    @NotBlank(message = "{reference.required}")
+    @Size(min = 8, max = 8, message = "{reference.size}")
+    @Pattern(regexp = "[A-Z0-9]*", message = "{reference.format}")
     private String reference;
     private Double amount;
     private LocalDate dueDate;

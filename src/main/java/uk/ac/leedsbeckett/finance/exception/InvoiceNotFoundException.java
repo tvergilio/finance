@@ -10,4 +10,8 @@ public class InvoiceNotFoundException extends RuntimeException {
         super("Could not find invoice for reference " + reference);
     }
 
+    public InvoiceNotFoundException() {
+        super("Could not find invoice.");
+    }
+
 }

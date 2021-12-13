@@ -10,12 +10,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import uk.ac.leedsbeckett.finance.controller.InvoiceController;
 import uk.ac.leedsbeckett.finance.exception.InvoiceNotFoundException;
 import uk.ac.leedsbeckett.finance.model.*;
@@ -44,7 +47,7 @@ class InvoiceServiceTest {
     class InvoiceServiceImplTestContextConfiguration {
         @Bean
         public InvoiceService invoiceService() {
-            return new InvoiceService(accountRepository, invoiceModelAssembler, invoiceRepository);
+            return new InvoiceService(accountRepository, invoiceModelAssembler, invoiceRepository, messageSource);
         }
     }
 
@@ -63,6 +66,12 @@ class InvoiceServiceTest {
     private AccountRepository accountRepository;
     @MockBean
     private InvoiceRepository invoiceRepository;
+    @MockBean
+    private Model model;
+    @MockBean
+    private MessageSource messageSource;
+    @MockBean
+    private BindingResult bindingResult;
     @SpyBean
     private InvoiceModelAssembler invoiceModelAssembler;
     @Autowired
@@ -97,6 +106,8 @@ class InvoiceServiceTest {
         Mockito.when(accountRepository.findAccountByStudentId(studentId))
                 .thenReturn(account);
         Mockito.doNothing().when(invoiceRepository).deleteById(isA(Long.class));
+        Mockito.when(model.getAttribute("invoice"))
+                .thenReturn(invoice);
     }
 
     @Test
@@ -195,14 +206,88 @@ class InvoiceServiceTest {
     @Test
     void testProcessPayment_withStatusPaid_throwsUnsupportedOperationException() {
         invoice.setStatus(Status.PAID);
-        assertThrows(UnsupportedOperationException.class, () ->  invoiceService.processPayment(invoiceReference),
+        assertThrows(UnsupportedOperationException.class, () -> invoiceService.processPayment(invoiceReference),
                 "Exception was not thrown.");
     }
 
     @Test
     void testProcessPayment_withStatusCancelled_throwsUnsupportedOperationException() {
         invoice.setStatus(Status.CANCELLED);
-        assertThrows(UnsupportedOperationException.class, () ->  invoiceService.processPayment(invoiceReference),
+        assertThrows(UnsupportedOperationException.class, () -> invoiceService.processPayment(invoiceReference),
+                "Exception was not thrown.");
+    }
+
+    @Test
+    void testShowPortal_returnsCorrectPage() {
+        String template = invoiceService.showPortal(model);
+        assertEquals("portal", template);
+        assertThat(model.getAttribute("invoice") instanceof Invoice);
+    }
+
+    @Test
+    void testFindInvoiceThroughPortal_withCorrectReference_findsInvoice() {
+        String template = invoiceService.findInvoiceThroughPortal(invoice, bindingResult, model);
+        assertEquals("invoice", template);
+        assertEquals(invoice, model.getAttribute("invoice"));
+    }
+
+    @Test
+    void testFindInvoiceThroughPortal_withValidationErrors_showsPortalAgain() {
+        Mockito.when(bindingResult.hasErrors())
+                .thenReturn(true);
+        String template = invoiceService.findInvoiceThroughPortal(invoice, bindingResult, model);
+        assertEquals("portal", template);
+    }
+
+    @Test
+    void testFindInvoiceThroughPortal_withIncorrectReference_throwsException() {
+        Invoice dummyInvoice = new Invoice();
+        dummyInvoice.setReference("00000000");
+        assertThrows(InvoiceNotFoundException.class, () -> invoiceService.findInvoiceThroughPortal(dummyInvoice, bindingResult, model),
+                "Exception was not thrown.");
+    }
+
+    @Test
+    void testFindInvoiceThroughPortal_withNullReference_throwsException() {
+        Invoice dummyInvoice = new Invoice();
+        assertThrows(InvoiceNotFoundException.class, () -> invoiceService.findInvoiceThroughPortal(dummyInvoice, bindingResult, model),
+                "Exception was not thrown.");
+    }
+
+    @Test
+    void testFindInvoiceThroughPortal_withNullInvoice_throwsException() {
+        assertThrows(InvoiceNotFoundException.class, () -> invoiceService.findInvoiceThroughPortal(null, bindingResult, model),
+                "Exception was not thrown.");
+    }
+
+    @Test
+    void testPayInvoiceThroughPortal_withCorrectReference_paysInvoice() {
+        invoice.setStatus(Status.OUTSTANDING);
+        String template = invoiceService.payInvoiceThroughPortal(invoice, model);
+        assertEquals("invoice", template);
+        assertEquals(invoice, model.getAttribute("invoice"));
+        Invoice returned = (Invoice) model.getAttribute("invoice");
+        assertEquals(Status.PAID, returned.getStatus());
+    }
+
+    @Test
+    void testPayInvoiceThroughPortal_withIncorrectReference_throwsException() {
+        Invoice dummyInvoice = new Invoice();
+        dummyInvoice.setReference("00000000");
+        assertThrows(InvoiceNotFoundException.class, () -> invoiceService.payInvoiceThroughPortal(dummyInvoice, model),
+                "Exception was not thrown.");
+    }
+
+    @Test
+    void testPayInvoiceThroughPortal_withNullReference_throwsException() {
+        Invoice dummyInvoice = new Invoice();
+        assertThrows(InvoiceNotFoundException.class, () -> invoiceService.payInvoiceThroughPortal(dummyInvoice, model),
+                "Exception was not thrown.");
+    }
+
+    @Test
+    void testPayInvoiceThroughPortal_withNullInvoice_throwsException() {
+        assertThrows(InvoiceNotFoundException.class, () -> invoiceService.payInvoiceThroughPortal(null, model),
                 "Exception was not thrown.");
     }
 
