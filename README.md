@@ -15,8 +15,13 @@ This is a simple microservices-based application which exposes a RESTful API. It
 1. The application integrates with a MariaDB relational database.
 2. Scripts to create the database schema can be found in the migrations folder and are run automatically by docker-compose.
 
-## Demo
+## Demos
+### Launching the application and using the RESTful API
 [![Watch the demo.](http://img.youtube.com/vi/zN4qPE-a5Xs/hqdefault.jpg)](https://youtu.be/zN4qPE-a5Xs)
+### The Invoice Payment Portal
+[![Watch the demo.](http://img.youtube.com/vi/oLiHyhMdSwA/hqdefault.jpg)](https://youtu.be/oLiHyhMdSwA)
+### Running Automated Tests
+[![Watch the demo.](http://img.youtube.com/vi/Nqa4v2hf-IY/hqdefault.jpg)](https://youtu.be/Nqa4v2hf-IY)
 
 ## Run using Docker Compose
 1. Rename the `.env.example` file inside the `finance` directory to `.env`:<br/>
