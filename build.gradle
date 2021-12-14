@@ -24,7 +24,7 @@ dependencies {
     testImplementation 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    testAnnotationProcessor('org.projectlombok:lombok:1.18.22')
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
 }
 
 test {

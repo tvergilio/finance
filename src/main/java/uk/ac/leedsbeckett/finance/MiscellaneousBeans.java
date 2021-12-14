@@ -11,9 +11,9 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import uk.ac.leedsbeckett.finance.model.*;
 
 @Configuration
-class MiscelaneousBeans {
+class MiscellaneousBeans {
 
-    private static final Logger log = LoggerFactory.getLogger(MiscelaneousBeans.class);
+    private static final Logger log = LoggerFactory.getLogger(MiscellaneousBeans.class);
 
     @Bean
     public LocalValidatorFactoryBean getValidator() {
