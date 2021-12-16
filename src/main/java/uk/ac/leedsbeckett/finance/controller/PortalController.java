@@ -18,6 +18,11 @@ public class PortalController {
         this.invoiceService = invoiceService;
     }
 
+    @GetMapping({ "/"})
+    public String redirectToHome(Model model) {
+        return "redirect:/portal";
+    }
+
     @GetMapping({ "/portal", "/portal/invoice"})
     public String showPortal(Model model) {
         return invoiceService.showPortal(model);

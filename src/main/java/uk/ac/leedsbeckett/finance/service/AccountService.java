@@ -11,7 +11,6 @@ import uk.ac.leedsbeckett.finance.exception.AccountNotFoundException;
 import uk.ac.leedsbeckett.finance.exception.AccountNotValidException;
 import uk.ac.leedsbeckett.finance.model.*;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
