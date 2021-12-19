@@ -5,8 +5,9 @@
     <meta th:replace="fragments/header"/>
 </head>
 <body>
+<div th:replace="fragments/nav"></div>
 <div class="container-fluid">
-    <p class="fs-4">Invoice</p>
+    <h3>Invoice</h3>
     <dl class="row col-md-3">
         <dt class="col-sm-9">Reference:</dt>
         <dd class="col-sm-3" th:text="${invoice.reference}"></dd>
@@ -39,7 +40,7 @@
         </div>
     </div>
 </div>
-<div class="container-fluid" style="margin-top:1rem;">
+<div class="container-fluid">
     <div th:if="${message}" th:text="${message}" th:class="${'alert alert-success w-25'}"></div>
 </div>
 </body>

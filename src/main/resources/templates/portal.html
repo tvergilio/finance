@@ -5,8 +5,8 @@
     <meta th:replace="fragments/header"/>
 </head>
 <body>
+<div th:replace="fragments/nav"></div>
 <div class="container-fluid">
-    <p class="fs-4">Invoice Payment Portal</p>
     <form action="#" th:action="@{/portal/invoice}" th:object="${invoice}" method="post">
         <div class="mb-3">
             <label for="reference" class="form-label">Invoice Reference:</label>
