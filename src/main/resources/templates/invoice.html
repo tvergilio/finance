@@ -14,7 +14,7 @@
         <dt class="col-sm-9">Student ID:</dt>
         <dd class="col-sm-3" th:text="${invoice.account.studentId}"></dd>
         <dt class="col-sm-9">Amount:</dt>
-        <dd class="col-sm-3" th:text="${invoice.amount}"></dd>
+        <dd class="col-sm-3" th:text="${#numbers.formatCurrency(invoice.amount)}"></dd>
         <dt class="col-sm-9">Due Date:</dt>
         <dd class="col-sm-3" th:text="${invoice.dueDate}"></dd>
         <dt class="col-sm-9">Type:</dt>
