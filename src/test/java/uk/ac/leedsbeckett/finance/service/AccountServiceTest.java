@@ -6,10 +6,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.test.context.ActiveProfiles;
@@ -38,14 +36,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @SpringBootTest
 @ActiveProfiles("test")
 class AccountServiceTest {
-
-    @TestConfiguration
-    class AccountServiceImplTestContextConfiguration {
-        @Bean
-        public AccountService accountService() {
-            return new AccountService(accountRepository, accountModelAssembler, invoiceRepository);
-        }
-    }
 
     private final String studentId = "c7777777";
     private final Long id = 1L;

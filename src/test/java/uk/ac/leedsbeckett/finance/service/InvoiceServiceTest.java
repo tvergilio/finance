@@ -7,11 +7,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
@@ -42,14 +40,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @SpringBootTest
 @ActiveProfiles("test")
 class InvoiceServiceTest {
-
-    @TestConfiguration
-    class InvoiceServiceImplTestContextConfiguration {
-        @Bean
-        public InvoiceService invoiceService() {
-            return new InvoiceService(accountRepository, invoiceModelAssembler, invoiceRepository, messageSource);
-        }
-    }
 
     private final LocalDate dueDate = LocalDate.of(2021, Month.DECEMBER, 25);
     private final LocalDate anotherDueDate = LocalDate.of(2018, Month.NOVEMBER, 23);
