@@ -22,14 +22,14 @@ You will need to make changes to `application.properties`
    `docker images`
 
 3. Tag Image
-   `docker tag tvergilio/finance XXXXX/finance:1.2`<br/>
+   `docker tag tvergilio/finance XXXXX/finance:1.3`<br/>
    (replace XXXXXXXX with your Docker Hub username; increment the version)
 
 4. Push to Docker Hub
    `docker push tvergilio/finance`
 
 ## Run container from image stored in Docker Hub
-`docker run --publish 8081:8081 XXXXXX/finance:1.2`<br/>
+`docker run --publish 8081:8081 XXXXXX/finance:1.3`<br/>
 (replace XXXXXXXX with your Docker Hub username; check the version)
 
 ## To clean old images and containers
