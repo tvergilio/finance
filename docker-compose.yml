@@ -1,7 +1,7 @@
 version: '2'
 
 networks:
-  finance:
+  default:
 
 services:
 
@@ -15,7 +15,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     networks:
-      - finance
+      - default
     healthcheck:
       test: "/usr/bin/mysql --user=root --password=$$MYSQL_ROOT_PASSWORD --execute \"SHOW DATABASES;\""
       timeout: 2s
@@ -35,4 +35,4 @@ services:
         db:
           condition: service_healthy
     networks:
-      - finance
+      - default
