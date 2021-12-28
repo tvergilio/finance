@@ -44,12 +44,8 @@ class MiscellaneousBeans {
     }
 
     @Bean
-    CommandLineRunner initDatabase(UserRepository userRepository, InvoiceRepository invoiceRepository, AccountRepository accountRepository) {
+    CommandLineRunner initDatabase(InvoiceRepository invoiceRepository, AccountRepository accountRepository) {
         return args -> {
-//            userRepository.save(new User("Walter White", "teacher"));
-//            userRepository.save(new User("Jesse Pinkman", "admin"));
-//            userRepository.findAll().forEach(user -> log.info("Preloaded " + user));
-//
 //            Account account1 = new Account("c7465688");
 //            Account account2 = new Account("c3608824");
 //

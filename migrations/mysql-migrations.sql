@@ -14,17 +14,6 @@ create or replace table account
 INSERT INTO finance.account (id, student_id) VALUES (1, 'c7465688');
 INSERT INTO finance.account (id, student_id) VALUES (2, 'c3608824');
 
-create or replace table finance_user
-(
-    id   bigint auto_increment
-        primary key,
-    name varchar(255) null,
-    role varchar(255) null
-);
-
-INSERT INTO finance.finance_user (id, name, role) VALUES (1, 'Walter White', 'teacher');
-INSERT INTO finance.finance_user (id, name, role) VALUES (2, 'Jesse Pinkman', 'admin');
-
 create or replace table invoice
 (
     id         bigint auto_increment

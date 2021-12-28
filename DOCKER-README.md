@@ -5,7 +5,7 @@ These are helpful commands if running the application without Docker Compose.
 `gradlew bootBuildImage --imageName=tvergilio/finance`
 
 ## Start DATABASE ONLY using Docker
-`docker run --name finance-db --publish 3306:3306 -e MARIADB_ROOT_PASSWORD=my-secret-pw -d mariadb:latest --port 3306`
+`docker run --name finance-db --publish 3308:3306 -e MARIADB_ROOT_PASSWORD=my-secret-pw -d mariadb:latest --port 3306`
 
 Connect to the database manually and run migrations manually to create schema, application user and grants.
 
