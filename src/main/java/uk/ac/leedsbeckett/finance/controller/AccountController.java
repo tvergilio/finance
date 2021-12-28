@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import uk.ac.leedsbeckett.finance.model.Account;
 import uk.ac.leedsbeckett.finance.service.AccountService;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 @RestController
 public
 class AccountController {
@@ -23,7 +26,7 @@ class AccountController {
     }
 
     @PostMapping("/accounts")
-    ResponseEntity<?> newAccount(@RequestBody Account newAccount) {
+    ResponseEntity<?> newAccount(@RequestBody @NotNull @NotEmpty Account newAccount) {
         return accountService.createNewAccount(newAccount);
     }
 

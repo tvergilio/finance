@@ -54,6 +54,9 @@ public class AccountService {
     }
 
     public ResponseEntity<?> createNewAccount(Account newAccount) {
+        if (newAccount.getStudentId() == null || newAccount.getStudentId().isEmpty()) {
+            throw new AccountNotValidException();
+        }
         Account savedAccount;
         try {
             savedAccount = accountRepository.save(newAccount);
