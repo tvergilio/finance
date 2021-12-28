@@ -15,8 +15,7 @@ import uk.ac.leedsbeckett.finance.model.AccountRepository;
 
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
@@ -42,29 +41,33 @@ public class AccountControllerIntegrationTest {
     }
 
     @Test
-    public void a_givenAccounts_whenGetAccounts_thenStatus200() throws Exception {
+    public void a_givenAccount_whenGetAccountById_thenStatus200() throws Exception {
+        mvc.perform(get("/accounts/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content()
+                        .contentTypeCompatibleWith(MediaTypes.HAL_JSON))
+                .andExpect(jsonPath("$.studentId").value("c6666666"))
+                .andExpect(jsonPath("$.id").value("1"));
+    }
+
+    @Test
+    public void b_givenAccount_whenDelete_thenStatus204() throws Exception {
+        mvc.perform(delete("/accounts/3")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void givenAccounts_whenGetAccounts_thenStatus200() throws Exception {
         mvc.perform(get("/accounts")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaTypes.HAL_JSON))
                 .andExpect(jsonPath("$._embedded.accountList[0].studentId").value("c6666666"))
-                .andExpect(jsonPath("$._embedded.accountList[0].id").value("1"))
-                .andExpect(jsonPath("$._embedded.accountList[1].studentId").value("c9999999"))
-                .andExpect(jsonPath("$._embedded.accountList[1].id").value("2"));
+                .andExpect(jsonPath("$._embedded.accountList[1].studentId").value("c9999999"));
     }
-
-    @Test
-    public void b_givenAccount_whenGetAccountById_thenStatus200() throws Exception {
-        mvc.perform(get("/accounts/3")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content()
-                        .contentTypeCompatibleWith(MediaTypes.HAL_JSON))
-                .andExpect(jsonPath("$.studentId").value("c6666666"))
-                .andExpect(jsonPath("$.id").value("3"));
-    }
-
 
     @Test
     public void givenNoAccounts_whenGetAccounts_thenStatus200_andLinkToSelf() throws Exception {
@@ -135,6 +138,14 @@ public class AccountControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(""))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void givenNoAccount_whenDelete_thenStatus404() throws Exception {
+        mvc.perform(delete("/accounts/1000")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Could not find account 1000"));
     }
 
     @AfterEach

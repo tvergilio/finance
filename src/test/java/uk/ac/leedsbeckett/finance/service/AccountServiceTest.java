@@ -26,7 +26,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -66,7 +65,7 @@ class AccountServiceTest {
                 .thenReturn(Arrays.asList(account, anotherAccount));
         Mockito.when(accountRepository.save(account))
                 .thenReturn(account);
-        Mockito.doNothing().when(accountRepository).deleteById(isA(Long.class));
+        Mockito.doNothing().when(accountRepository).delete(account);
     }
 
     @Test
@@ -139,7 +138,7 @@ class AccountServiceTest {
     @Test
     void testDeleteAccount_withValidId_deletesAccount() {
         accountService.deleteAccount(id);
-        verify(accountRepository, times(1)).deleteById(id);
+        verify(accountRepository, times(1)).delete(account);
         verify(accountModelAssembler, times(0)).toModel(any());
     }
 }

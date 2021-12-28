@@ -86,7 +86,8 @@ public class AccountService {
     }
 
     public ResponseEntity<?> deleteAccount(Long id) {
-        accountRepository.deleteById(id);
+        Account account = accountRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(id));
+        accountRepository.delete(account);
         return ResponseEntity.noContent().build();
     }
 
