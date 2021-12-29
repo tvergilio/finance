@@ -11,8 +11,8 @@ create or replace table account
     student_id varchar(255) unique null
 );
 
-INSERT INTO finance.account (id, student_id) VALUES (1, 'c7465688');
-INSERT INTO finance.account (id, student_id) VALUES (2, 'c3608824');
+INSERT INTO finance.account (id, student_id) VALUES (1, 'c3781247');
+INSERT INTO finance.account (id, student_id) VALUES (2, 'c3922382');
 
 create or replace table invoice
 (
