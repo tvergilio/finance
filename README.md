@@ -12,8 +12,20 @@ This is a simple microservices-based application which exposes a RESTful API. It
 6. Cancel Invoice - cancel an outstanding invoice.
 
 ## Integrations
-1. The application integrates with a MariaDB relational database.
-2. Scripts to create the database schema can be found in the migrations folder and are run automatically by docker-compose.
+### 1. Database
+The application integrates with a MariaDB relational database.</br>
+Scripts to create the database schema can be found in the migrations folder and are run automatically by docker-compose.
+
+### 2. Student
+The application integrates with the [Student microservice](https://github.com/tvergilio/student) via REST.
+1. When a student is created, a request is sent to this application to create an account.
+2. When a student enrols in a course, a request is sent to this application to create an invoice.
+3. When checking the eligibility to graduate, a request is sent to this application to see if there are any outstanding payments.
+
+### 3. Library
+The application integrates with the [Library microservice](https://github.com/AidanCurley/CESBooks) via REST.
+1. When a book is returned late, a fine is issued. A request is sent to this application to create an invoice.
+2. The invoice must be paid via this application's Payment Portal.
 
 ## Demos
 ### Launching the application and using the RESTful API
