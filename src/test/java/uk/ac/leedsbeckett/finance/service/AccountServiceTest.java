@@ -17,7 +17,6 @@ import uk.ac.leedsbeckett.finance.exception.AccountNotFoundException;
 import uk.ac.leedsbeckett.finance.model.Account;
 import uk.ac.leedsbeckett.finance.model.AccountModelAssembler;
 import uk.ac.leedsbeckett.finance.model.AccountRepository;
-import uk.ac.leedsbeckett.finance.model.InvoiceRepository;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -42,8 +41,6 @@ class AccountServiceTest {
     private Account anotherAccount;
     @MockBean
     private AccountRepository accountRepository;
-    @MockBean
-    private InvoiceRepository invoiceRepository;
     @SpyBean
     private AccountModelAssembler accountModelAssembler;
     @Autowired
