@@ -1,0 +1,18 @@
+= Finance REST API
+
+API documentation for the Finance microservice:
+
+:snippets: build/snippets
+
+.path-parameters
+include::{snippets}/accounts/path-parameters.adoc[]
+
+.links
+include::{snippets}/accounts/links.adoc[]
+
+.request
+include::{snippets}/accounts/http-request.adoc[]
+
+.response
+include::{snippets}/accounts/http-response.adoc[]
+
