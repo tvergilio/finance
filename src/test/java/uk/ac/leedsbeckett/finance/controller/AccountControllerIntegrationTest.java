@@ -188,7 +188,7 @@ public class AccountControllerIntegrationTest {
         accountResponseFieldDescriptor = List.of(
                 fieldWithPath("id").description("The internal ID of the account."),
                 fieldWithPath("studentId").description("The external student ID."),
-                fieldWithPath("hasOutstandingBalance").description("Whether the account has an outstanding balance"),
+                fieldWithPath("hasOutstandingBalance").description("Whether the account has an outstanding balance."),
                 subsectionWithPath("_links").ignored()
         );
         linkDescriptors = List.of(linkWithRel("self").description("Link to this resource."),
