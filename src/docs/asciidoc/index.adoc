@@ -4,15 +4,64 @@ API documentation for the Finance microservice:
 
 :snippets: build/snippets
 
-.path-parameters
-include::{snippets}/accounts/path-parameters.adoc[]
+=== GET /accounts
 
-.links
-include::{snippets}/accounts/links.adoc[]
+.Request Sample
+include::{snippets}/get-accounts/http-request.adoc[]
 
-.request
-include::{snippets}/accounts/http-request.adoc[]
+.Response Sample
+include::{snippets}/get-accounts/http-response.adoc[]
 
-.response
-include::{snippets}/accounts/http-response.adoc[]
+.Response Fields
+include::{snippets}/get-account-by-id/response-fields.adoc[]
+
+.Links
+include::{snippets}/get-accounts/links.adoc[]
+
+
+=== GET /accounts/{id}
+
+.Request Sample
+include::{snippets}/get-account-by-id/http-request.adoc[]
+
+.Response Sample
+include::{snippets}/get-account-by-id/http-response.adoc[]
+
+.Path Parameters
+include::{snippets}/get-account-by-id/path-parameters.adoc[]
+
+.Response Fields
+include::{snippets}/get-account-by-id/response-fields.adoc[]
+
+.Links
+include::{snippets}/get-account-by-id/links.adoc[]
+
+=== POST /accounts
+
+.Request Sample
+include::{snippets}/create-account/http-request.adoc[]
+
+.Response Sample
+include::{snippets}/create-account/http-response.adoc[]
+
+.Request Fields
+include::{snippets}/create-account/request-fields.adoc[]
+
+.Response Fields
+include::{snippets}/create-account/response-fields.adoc[]
+
+.Links
+include::{snippets}/create-account/links.adoc[]
+
+
+=== DELETE /accounts/{id}
+
+.Request Sample
+include::{snippets}/delete-account-by-id/http-request.adoc[]
+
+.Response Sample
+include::{snippets}/delete-account-by-id/http-response.adoc[]
+
+.Path Parameters
+include::{snippets}/delete-account-by-id/path-parameters.adoc[]
 
