@@ -1,0 +1,101 @@
+:snippets: ../../../build/snippets
+
+=== GET /invoices
+Used to get a list of all the invoices in the system. Send a GET request to the /invoices endpoint. See the request sample below.
+
+.Request Sample
+include::{snippets}/get-invoices/http-request.adoc[]
+
+The API sends back a response similar to the sample below.
+
+.Response Sample
+include::{snippets}/get-invoices/http-response.adoc[]
+
+The following fields are included in each invoice returned in the response:
+include::{snippets}/get-invoice-by-id/response-fields.adoc[]
+
+The following links are included in the response:
+include::{snippets}/get-invoices/links.adoc[]
+
+=== GET /invoices/reference/{ref}
+Used to get an invoice by its unique external reference. See the request sample below.
+
+.Request Sample
+include::{snippets}/get-invoice-by-reference/http-request.adoc[]
+
+The following parameter must be provided:
+
+include::{snippets}/get-invoice-by-reference/path-parameters.adoc[]
+
+The API sends back a response similar to the sample below.
+
+.Response Sample
+include::{snippets}/get-invoice-by-reference/http-response.adoc[]
+
+The following fields are included in the response:
+include::{snippets}/get-invoice-by-reference/response-fields.adoc[]
+
+The following links are included in the response:
+include::{snippets}/get-invoice-by-reference/links.adoc[]
+
+=== POST /invoices
+Used to create a new invoice. Send a POST request to the /invoices endpoint with a JSON body containing the required fields. See the request sample below.
+
+.Request Sample:
+include::{snippets}/create-invoice/http-request.adoc[]
+
+The following fields must be provided when creating a new invoice:
+include::{snippets}/create-invoice/request-fields.adoc[]
+
+Upon successful creation of a new invoice, the API sends back a response similar to the sample below.
+
+.Response Sample:
+include::{snippets}/create-invoice/http-response.adoc[]
+
+The following fields are included in the response:
+include::{snippets}/create-invoice/response-fields.adoc[]
+
+The following links are included in the response:
+include::{snippets}/create-invoice/links.adoc[]
+
+=== PUT /invoices/{ref}/pay
+Used to pay an invoice. Send a PUT request to the /invoices/{ref}/pay endpoint. The body of the request must be empty. See the request sample below.
+
+.Request Sample:
+include::{snippets}/pay-invoice/http-request.adoc[]
+
+The following parameter must be provided when paying an invoice:
+
+include::{snippets}/pay-invoice/path-parameters.adoc[]
+
+Upon successful payment, the API sends back a response similar to the sample below.
+
+.Response Sample:
+include::{snippets}/pay-invoice/http-response.adoc[]
+
+The following fields are included in the response:
+include::{snippets}/pay-invoice/response-fields.adoc[]
+
+The following links are included in the response:
+include::{snippets}/pay-invoice/links.adoc[]
+
+=== DELETE /invoices/{ref}/cancel
+Used to cancel an invoice. Send a DELETE request to the /invoices/{ref}/cancel endpoint. The body of the request must be empty. Only invoices which are currently outstanding can be deleted. See the request sample below.
+
+.Request Sample:
+include::{snippets}/delete-invoice/http-request.adoc[]
+
+The following parameter must be provided when deleting an invoice:
+
+include::{snippets}/delete-invoice/path-parameters.adoc[]
+
+Upon successful cancellation, the API sends back a response similar to the sample below.
+
+.Response Sample:
+include::{snippets}/delete-invoice/http-response.adoc[]
+
+The following fields are included in the response:
+include::{snippets}/delete-invoice/response-fields.adoc[]
+
+The following links are included in the response:
+include::{snippets}/delete-invoice/links.adoc[]

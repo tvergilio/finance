@@ -1,0 +1,60 @@
+:snippets: ../../../build/snippets
+
+=== GET /accounts
+Used to get a list of all the accounts in the system. Send a GET request to the /accounts endpoint. See the request sample below.
+
+.Request Sample
+include::{snippets}/get-accounts/http-request.adoc[]
+
+The API sends back a response similar to the sample below.
+
+.Response Sample
+include::{snippets}/get-accounts/http-response.adoc[]
+
+The following fields are included in each account returned in the response:
+include::{snippets}/get-account-by-id/response-fields.adoc[]
+
+The following links are included in the response:
+include::{snippets}/get-accounts/links.adoc[]
+
+
+=== GET /accounts/student/{id}
+Used to get an account by the external ID of the student associated with it. See the request sample below.
+
+.Request Sample
+include::{snippets}/get-account-by-student-id/http-request.adoc[]
+
+The following parameter must be provided:
+
+include::{snippets}/get-account-by-student-id/path-parameters.adoc[]
+
+The API sends back a response similar to the sample below.
+
+.Response Sample
+include::{snippets}/get-account-by-student-id/http-response.adoc[]
+
+The following fields are included in the response:
+include::{snippets}/get-account-by-student-id/response-fields.adoc[]
+
+The following links are included in the response:
+include::{snippets}/get-account-by-student-id/links.adoc[]
+
+=== POST /accounts
+Used to create a new account for a student. Send a POST request to the /accounts endpoint with a JSON body containing the external student ID. See the request sample below.
+
+.Request Sample
+include::{snippets}/create-account/http-request.adoc[]
+
+The following fields must be provided when creating a new account:
+include::{snippets}/create-account/request-fields.adoc[]
+
+Upon successful creation of a new account, the API sends back a response similar to the sample below.
+
+.Response Sample
+include::{snippets}/create-account/http-response.adoc[]
+
+The following fields are included in the response:
+include::{snippets}/create-account/response-fields.adoc[]
+
+The following links are included in the response:
+include::{snippets}/create-account/links.adoc[]

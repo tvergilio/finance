@@ -95,7 +95,7 @@ public class AccountControllerIntegrationTest {
 
                 .andDo(document("get-accounts",
                         links(halLinks(), linkWithRel("self").description("Link to this resource.")),
-                        responseFields(fieldWithPath("_embedded.accountList[]").description("A list of accounts"),
+                        responseFields(fieldWithPath("_embedded.accountList[]").description("A list of all accounts in the system."),
                                 subsectionWithPath("_links").ignored())
                                 .andWithPrefix("_embedded.accountList[].", accountResponseFieldDescriptor)));
     }
@@ -121,12 +121,17 @@ public class AccountControllerIntegrationTest {
 
     @Test
     public void givenAccount_whenGetAccountByStudentId_thenStatus200() throws Exception {
-        mvc.perform(get("/accounts/student/c6666666")
+        mvc.perform(get("/accounts/student/{studentId}", "c6666666")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaTypes.HAL_JSON))
-                .andExpect(jsonPath("$.studentId").value("c6666666"));
+                .andExpect(jsonPath("$.studentId").value("c6666666"))
+
+                .andDo(document("get-account-by-student-id",
+                        pathParameters(parameterWithName("studentId").description("The external ID of the student associated with this account.")),
+                        links(linkDescriptors),
+                        responseFields(accountResponseFieldDescriptor)));
     }
 
     @Test

@@ -4,10 +4,13 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.hypermedia.LinkDescriptor;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -16,8 +19,14 @@ import uk.ac.leedsbeckett.finance.model.*;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
@@ -27,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.MethodName.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@AutoConfigureRestDocs(outputDir = "build/snippets")
 public class InvoiceControllerIntegrationTest {
 
     @Autowired
@@ -41,6 +51,8 @@ public class InvoiceControllerIntegrationTest {
     private String outstandingInvoiceReference;
     private String paidInvoiceReference;
     private String cancelledInvoiceReference;
+    private List<FieldDescriptor> invoiceResponseFieldDescriptor;
+    private List<LinkDescriptor> linkDescriptors;
 
     @BeforeEach
     public void setUp() {
@@ -59,11 +71,12 @@ public class InvoiceControllerIntegrationTest {
         cancelledInvoice.setStatus(Status.CANCELLED);
         Invoice cancelledInvoiceSaved = invoiceRepository.save(cancelledInvoice);
         cancelledInvoiceReference = cancelledInvoiceSaved.getReference();
+        configureRestDocumentation();
     }
 
     @Test
-    public void a_givenInvoice_whenGetAccountById_thenStatus200() throws Exception {
-        mvc.perform(get("/invoices/1")
+    public void a_givenInvoice_whenGetInvoiceById_thenStatus200() throws Exception {
+        mvc.perform(get("/invoices/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
@@ -74,29 +87,41 @@ public class InvoiceControllerIntegrationTest {
 
     @Test
     public void givenInvoice_whenDelete_thenStatus200_andInvoiceCancelled() throws Exception {
-        mvc.perform(delete("/invoices/" + outstandingInvoiceReference + "/cancel")
+        mvc.perform(delete("/invoices/{reference}/cancel", outstandingInvoiceReference)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaTypes.HAL_JSON))
                 .andExpect(jsonPath("$.status").value("CANCELLED"))
-                .andExpect(jsonPath("$.reference").value(outstandingInvoiceReference));
+                .andExpect(jsonPath("$.reference").value(outstandingInvoiceReference))
+
+                .andDo(document("delete-invoice",
+                        pathParameters(parameterWithName("reference").description("The external reference of the invoice to delete.")),
+                        links(linkWithRel("self").description("Link to this resource."),
+                                linkWithRel("invoices").description("Link to all invoices.")),
+                        responseFields(invoiceResponseFieldDescriptor)));
     }
 
     @Test
     public void givenOutstandingInvoice_whenPay_thenStatus200_andInvoicePaid() throws Exception {
-        mvc.perform(put("/invoices/" + outstandingInvoiceReference + "/pay")
+        mvc.perform(put("/invoices/{reference}/pay", outstandingInvoiceReference)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaTypes.HAL_JSON))
                 .andExpect(jsonPath("$.status").value("PAID"))
-                .andExpect(jsonPath("$.reference").value(outstandingInvoiceReference));
+                .andExpect(jsonPath("$.reference").value(outstandingInvoiceReference))
+
+                .andDo(document("pay-invoice",
+                pathParameters(parameterWithName("reference").description("The external reference of the invoice to pay.")),
+                links(linkWithRel("self").description("Link to this resource."),
+                        linkWithRel("invoices").description("Link to all invoices.")),
+                responseFields(invoiceResponseFieldDescriptor)));
     }
 
     @Test
     public void givenPaidInvoice_whenPay_thenStatus405() throws Exception {
-        mvc.perform(put("/invoices/" + paidInvoiceReference + "/pay")
+        mvc.perform(put("/invoices/{reference}/pay", paidInvoiceReference)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isMethodNotAllowed())
                 .andExpect(content()
@@ -107,7 +132,7 @@ public class InvoiceControllerIntegrationTest {
 
     @Test
     public void givenCancelledInvoice_whenPay_thenStatus405() throws Exception {
-        mvc.perform(put("/invoices/" + cancelledInvoiceReference + "/pay")
+        mvc.perform(put("/invoices/{reference}/pay", cancelledInvoiceReference)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isMethodNotAllowed())
                 .andExpect(content()
@@ -125,7 +150,13 @@ public class InvoiceControllerIntegrationTest {
                         .contentTypeCompatibleWith(MediaTypes.HAL_JSON))
                 .andExpect(jsonPath("$._embedded.invoiceList[0].reference").value(outstandingInvoiceReference))
                 .andExpect(jsonPath("$._embedded.invoiceList[1].reference").value(paidInvoiceReference))
-                .andExpect(jsonPath("$._embedded.invoiceList[2].reference").value(cancelledInvoiceReference));
+                .andExpect(jsonPath("$._embedded.invoiceList[2].reference").value(cancelledInvoiceReference))
+
+                .andDo(document("get-invoices",
+                        links(halLinks(), linkWithRel("self").description("Link to this resource.")),
+                        responseFields(fieldWithPath("_embedded.invoiceList[]").description("A list of all invoices in the system."),
+                                subsectionWithPath("_links").ignored())
+                                .andWithPrefix("_embedded.invoiceList[].", invoiceResponseFieldDescriptor)));
     }
 
     @Test
@@ -148,12 +179,17 @@ public class InvoiceControllerIntegrationTest {
 
     @Test
     public void givenInvoice_whenGetInvoiceByReference_thenStatus200() throws Exception {
-        mvc.perform(get("/invoices/reference/" + outstandingInvoiceReference)
+        mvc.perform(get("/invoices/reference/{ref}", outstandingInvoiceReference)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
                         .contentTypeCompatibleWith(MediaTypes.HAL_JSON))
-                .andExpect(jsonPath("$.reference").value(outstandingInvoiceReference));
+                .andExpect(jsonPath("$.reference").value(outstandingInvoiceReference))
+
+                .andDo(document("get-invoice-by-reference",
+                        pathParameters(parameterWithName("ref").description("The external reference of the invoice to return.")),
+                        links(linkDescriptors),
+                        responseFields(invoiceResponseFieldDescriptor)));
     }
 
     @Test
@@ -170,7 +206,15 @@ public class InvoiceControllerIntegrationTest {
                         .content("{\"amount\": 15.00, \"dueDate\": \"2021-11-06\",\"type\": \"LIBRARY_FINE\",\"account\": {\"studentId\": \"c6666666\"}}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.studentId").value("c6666666"))
-                .andExpect(jsonPath("$.status").value("OUTSTANDING"));
+                .andExpect(jsonPath("$.status").value("OUTSTANDING"))
+
+                .andDo(document("create-invoice",
+                requestFields(fieldWithPath("amount").description("The invoice amount."),
+                        fieldWithPath("dueDate").description("The date the invoice must be paid by (yyyy-MM-dd)."),
+                        fieldWithPath("type").description("The type of invoice. Types currently enabled are: LIBRARY_FINE and TUITION_FEES."),
+                        fieldWithPath("account.studentId").description("The external ID of the student responsible for paying this invoice.")),
+                links(linkDescriptors),
+                responseFields(invoiceResponseFieldDescriptor)));
     }
 
     @Test
@@ -210,6 +254,23 @@ public class InvoiceControllerIntegrationTest {
         mvc.perform(delete("/invoices/999999/pay")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isMethodNotAllowed());
+    }
+
+    private void configureRestDocumentation() {
+        invoiceResponseFieldDescriptor = List.of(
+                fieldWithPath("id").description("The internal ID of the invoice."),
+                fieldWithPath("reference").description("The external invoice reference used to pay an invoice via the Payment Portal."),
+                fieldWithPath("amount").description("The invoice amount."),
+                fieldWithPath("dueDate").description("The date the invoice must be paid by."),
+                fieldWithPath("type").description("The type of invoice. Types currently enabled are: LIBRARY_FINE and TUITION_FEES."),
+                fieldWithPath("status").description("The status of the invoice: OUTSTANDING, PAID or CANCELLED."),
+                fieldWithPath("studentId").description("The external ID of the student responsible for paying this invoice."),
+                subsectionWithPath("_links").ignored()
+        );
+        linkDescriptors = List.of(linkWithRel("self").description("Link to this resource."),
+                linkWithRel("invoices").description("Link to all invoices."),
+                linkWithRel("cancel").description("Link to cancel this invoice."),
+                linkWithRel("pay").description("Link to pay this invoice."));
     }
 
     @AfterEach
