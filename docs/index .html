@@ -1,0 +1,1323 @@
+<!DOCTYPE HTML>
+<!--
+	Hyperspace by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="eng">
+	<head>
+		<title>Finance REST API</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+
+	</head>
+	<body class="is-preload">
+
+		<!-- Sidebar -->
+			<section id="sidebar">
+				<div class="inner">
+					<nav>
+						<ul>
+							<li><a href="#intro">Introduction</a></li>
+							<li><a href="#one">Get an Account</a></li>
+							<li><a href="#two">Create an Account</a></li>
+							<li><a href="#three">Get All Accounts</a></li>
+							<li><a href="#four">Get an Invoice</a></li>
+							<li><a href="#five">Create an Invoice</a></li>
+							<li><a href="#six">Get All Invoices</a></li>
+							<li><a href="#seven">Pay an Invoice</a></li>
+							<li><a href="#eight">Cancel an Invoice</a></li>
+						</ul>
+					</nav>
+				</div>
+			</section>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Intro -->
+					<section id="intro" class="wrapper style1 fullscreen fade-up">
+						<div class="inner">
+							<h1>Finance REST API</h1>
+							<p>A simple microservices-based application which exposes a RESTful API,
+								written in Java using the Spring Boot framework. It is intended for use as
+								part of the SESC module at Leeds Beckett University.<br /></p>
+							<h6>version 1.0.0</h6>
+						</div>
+					</section>
+
+				<!-- One -->
+					<section id="one" class="wrapper style1-alt spotlights">
+					<div class="inner">
+						<h3 id="_get_accountsstudentid">GET  /accounts/student/{studentId}</h3>
+						Used to get an account by the external ID of the student associated with it. See the request sample below.
+						<div class="content">
+                					<pre>
+                    					<code class="language-http" data-lang="http">
+GET /accounts/student/c6666666 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: localhost:8080
+                    					</code>
+                					</pre>
+						</div>
+						<div class="paragraph">
+							The following parameter must be provided:
+						</div>
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 78%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Parameter</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<p><code>studentId</code></p>
+									</td>
+									<td>
+										<p>The external ID of the student associated with this account.</p>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						The API sends back a response similar to the sample below.
+						<div class="content">
+                    				<pre>
+                        				<code class="language-http" data-lang="http">
+HTTP/1.1 200 OK
+Content-Type: application/hal+json
+Content-Length: 475
+{
+   "id":5,
+   "studentId":"c6666666",
+   "hasOutstandingBalance":false,
+   "_links":{
+      "self":{
+         "href":"http://localhost:8080/accounts/student/c6666666"
+      },
+      "accounts":{
+         "href":"http://localhost:8080/accounts"
+      }
+   }
+}
+                        				</code>
+                    				</pre>
+						</div>
+						<p>The following fields are included in each account returned in the response:</p>
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 15%;">
+								<col style="width: 63%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Path</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td>
+									<p><code>id</code></p>
+								</td>
+								<td>
+									<p><code>Number</code></p>
+								</td>
+								<td>
+									<p>The internal ID of the account.</p>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<p><code>studentId</code></p>
+								</td>
+								<td>
+									<p><code>String</code></p>
+								</td>
+								<td>
+									<p>The external student ID.</p>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<p><code>hasOutstandingBalance</code></p>
+								</td>
+								<td>
+									<p><code>Boolean</code></p>
+								</td>
+								<td>
+									<p>Whether the account has an outstanding balance.</p>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+						<div class="paragraph">
+							<p>The following links are included in the response:</p>
+						</div>
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 78%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Relation</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td>
+									<p><code>self</code></p>
+								</td>
+								<td>
+									<p>Link to this resource.</p>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<p><code>accounts</code></p>
+								</td>
+								<td>
+									<p>Link to all accounts.</p>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</section>
+
+				<!-- Two -->
+					<section id="two" class="wrapper style1 spotlights">
+					<div class="inner">
+						<h3 id="_post_accounts">POST  /accounts</h3>
+						Used to create a new account for a student. Send a POST request to the /accounts endpoint with a JSON body containing the external student ID. See the request sample below.
+						<div class="content">
+                					<pre>
+                    					<code class="language-http" data-lang="http">
+POST /accounts HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 25
+Host: localhost:8080
+
+{"studentId": "c3429928"}				</code>
+									</pre>
+						</div>
+						<div class="paragraph">
+							<p>The following fields must be provided when creating a new account:</p>
+						</div>
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 13%;">
+								<col style="width: 65%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Path</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td>
+									<p><code>studentId</code></p>
+								</td>
+								<td>
+									<p><code>String</code></p>
+								</td>
+								<td>
+									<p>The external student ID.</p>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+
+						Upon successful creation of a new account, the API sends back a response similar to the sample below.
+						<div class="content">
+                    				<pre>
+                        				<code class="language-http" data-lang="http">
+HTTP/1.1 201 Created
+Location: http://localhost:8080/accounts/student/c3429928
+Content-Type: application/hal+json
+Content-Length: 192
+
+{
+   "id":20,
+   "studentId":"c3429928",
+   "hasOutstandingBalance":false,
+   "_links":{
+      "self":{
+         "href":"http://localhost:8080/accounts/student/c3429928"
+      },
+      "accounts":{
+         "href":"http://localhost:8080/accounts"
+      }
+   }
+}
+                        				</code>
+                    				</pre>
+						</div>
+						<p>The following fields are included in each account returned in the response:</p>
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 13%;">
+								<col style="width: 65%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Path</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td>
+									<p><code>id</code></p>
+								</td>
+								<td>
+									<p><code>Number</code></p>
+								</td>
+								<td>
+									<p>The internal ID of the account.</p>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<p><code>studentId</code></p>
+								</td>
+								<td>
+									<p><code>String</code></p>
+								</td>
+								<td>
+									<p>The external student ID.</p>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<p><code>hasOutstandingBalance</code></p>
+								</td>
+								<td>
+									<p><code>Boolean</code></p>
+								</td>
+								<td>
+									<p>Whether the account has an outstanding balance.</p>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+						<div class="paragraph">
+							<p>The following links are included in the response:</p>
+						</div>
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 78%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Relation</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td>
+									<p><code>self</code></p>
+								</td>
+								<td>
+									<p>Link to this resource.</p>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<p><code>accounts</code></p>
+								</td>
+								<td>
+									<p>Link to all accounts.</p>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</section>
+
+				<!-- Three -->
+					<section id="three" class="wrapper style1-alt spotlights">
+					<div class="inner">
+						<h3 id="_get_accounts">GET  /accounts</h3>
+						Used to get a list of all the accounts in the system. Send a GET request to the /accounts endpoint. See the request sample below.
+						<div class="content">
+							<pre>
+                    					<code class="language-http" data-lang="http">
+GET /accounts HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: localhost:8080
+                    					</code>
+                					</pre>
+						</div>
+						The API sends back a response similar to the sample below.
+						<div class="content">
+							<pre>
+                        				<code class="language-http" data-lang="http">
+HTTP/1.1 200 OK
+Content-Type: application/hal+json
+Content-Length: 475
+{
+   "_embedded":{
+      "accountList":[
+         {
+            "id":7,
+            "studentId":"c6666666",
+            "hasOutstandingBalance":false,
+            "_links":{
+               "self":{
+                  "href":"http://localhost:8080/accounts/student/c6666666"
+               },
+               "accounts":{
+                  "href":"http://localhost:8080/accounts"
+               }
+            }
+         },
+         {
+            "id":8,
+            "studentId":"c9999999",
+            "hasOutstandingBalance":false,
+            "_links":{
+               "self":{
+                  "href":"http://localhost:8080/accounts/student/c9999999"
+               },
+               "accounts":{
+                  "href":"http://localhost:8080/accounts"
+               }
+            }
+         }
+      ]
+   },
+   "_links":{
+      "self":{
+         "href":"http://localhost:8080/accounts"
+      }
+   }
+}
+                        				</code>
+                    				</pre>
+						</div>
+						<p>The following fields are included in each account returned in the response:</p>
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 13%;">
+								<col style="width: 65%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Path</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td>
+									<p><code>id</code></p>
+								</td>
+								<td>
+									<p><code>Number</code></p>
+								</td>
+								<td>
+									<p>The internal ID of the account.</p>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<p><code>studentId</code></p>
+								</td>
+								<td>
+									<p><code>String</code></p>
+								</td>
+								<td>
+									<p>The external student ID.</p>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<p><code>hasOutstandingBalance</code></p>
+								</td>
+								<td>
+									<p><code>Boolean</code></p>
+								</td>
+								<td>
+									<p>Whether the account has an outstanding balance.</p>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+						<div class="paragraph">
+							<p>The following links are included in the response:</p>
+						</div>
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 78%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Relation</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td>
+									<p><code>self</code></p>
+								</td>
+								<td>
+									<p>Link to this resource.</p>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</section>
+
+				<!-- Four -->
+					<section id="four" class="wrapper style1 spotlights">
+					<div class="inner">
+						<h3 id="_get_invoicesreferenceref">GET  /invoices/reference/{reference}</h3>
+						Used to get an invoice by its unique external reference. See the request sample below.
+						<div class="content">
+                					<pre>
+                    					<code class="language-http" data-lang="http">
+GET /invoices/reference/BAX5SPP5 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: localhost:8080
+                    					</code>
+                					</pre>
+						</div>
+						<div class="paragraph">
+							The following parameter must be provided:
+						</div>
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 78%;">
+							</colgroup>
+							<thead>
+								<tr>
+									<th>Parameter</th>
+									<th>Description</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<p><code>reference</code></p>
+									</td>
+									<td>
+										<p>The external reference of the invoice to return.</p>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						The API sends back a response similar to the sample below.
+						<div class="content">
+                    				<pre>
+                        				<code class="language-http" data-lang="http">
+HTTP/1.1 200 OK
+Content-Type: application/hal+json
+Content-Length: 397
+{
+   "id":10,
+   "reference":"BAX5SPP5",
+   "amount":10.5,
+   "dueDate":"2021-12-25",
+   "type":"TUITION_FEES",
+   "status":"OUTSTANDING",
+   "studentId":"c6666666",
+   "_links":{
+      "self":{
+         "href":"http://localhost:8080/invoices/reference/BAX5SPP5"
+      },
+      "invoices":{
+         "href":"http://localhost:8080/invoices"
+      },
+      "cancel":{
+         "href":"http://localhost:8080/invoices/BAX5SPP5/cancel"
+      },
+      "pay":{
+         "href":"http://localhost:8080/invoices/BAX5SPP5/pay"
+      }
+   }
+}
+                        				</code>
+                    				</pre>
+						</div>
+						<p>The following fields are included in each account returned in the response:</p>
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 15%;">
+								<col style="width: 63%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Path</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td><p><code>id</code></p></td>
+								<td><p><code>Number</code></p></td>
+								<td><p>The internal ID of the invoice.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>reference</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The external invoice reference used to pay an invoice via the Payment Portal.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>amount</code></p></td>
+								<td><p><code>Number</code></p></td>
+								<td><p>The invoice amount.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>dueDate</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The date the invoice must be paid by.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>type</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The type of invoice. Types currently enabled are: LIBRARY_FINE and TUITION_FEES.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>status</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The status of the invoice: OUTSTANDING, PAID or CANCELLED.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>studentId</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The external ID of the student responsible for paying this invoice.</p></td>
+							</tr>
+							</tbody>
+						</table>
+						<div class="paragraph">
+							<p>The following links are included in the response:</p>
+						</div>
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 78%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Relation</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td><p><code>self</code></p></td>
+								<td><p>Link to this resource.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>invoices</code></p></td>
+								<td><p>Link to all invoices.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>cancel</code></p></td>
+								<td><p>Link to cancel this invoice.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>pay</code></p></td>
+								<td><p>Link to pay this invoice.</p></td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</section>
+
+				<!-- Five -->
+					<section id="five" class="wrapper style1-alt spotlights">
+					<div class="inner">
+						<h3 id="_post_invoices">POST  /invoices</h3>
+						Used to create a new invoice. Send a POST request to the /invoices endpoint with a JSON body containing the required fields. See the request sample below.
+						<div class="content">
+                					<pre>
+                    					<code class="language-http" data-lang="http">
+POST /invoices HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 102
+Host: localhost:8080
+{
+   "amount":15.00,
+   "dueDate":"2021-11-06",
+   "type":"LIBRARY_FINE",
+   "account":{
+      "studentId":"c6666666"
+   }
+}
+                    					</code>
+                					</pre>
+						</div>
+						<div class="paragraph">
+							The following fields must be provided when creating a new invoice:
+						</div>
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 15%;">
+								<col style="width: 63%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Path</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td><p><code>amount</code></p></td>
+								<td><p><code>Number</code></p></td>
+								<td><p>The invoice amount.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>dueDate</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The date the invoice must be paid by (yyyy-MM-dd).</p></td>
+							</tr>
+							<tr>
+								<td><p><code>type</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The type of invoice. Types currently enabled are: LIBRARY_FINE and TUITION_FEES.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>account.studentId</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The external ID of the student responsible for paying this invoice.</p></td>
+							</tr>
+							</tbody>
+						</table>
+
+						Upon successful creation of a new invoice, the API sends back a response similar to the sample below.
+						<div class="content">
+                    				<pre>
+                        				<code class="language-http" data-lang="http">
+HTTP/1.1 201 Created
+Location: http://localhost:8080/invoices/31
+Content-Type: application/hal+json
+Content-Length: 397
+{
+   "id":31,
+   "reference":"9WPOUBGF",
+   "amount":15.0,
+   "dueDate":"2021-11-06",
+   "type":"LIBRARY_FINE",
+   "status":"OUTSTANDING",
+   "studentId":"c6666666",
+   "_links":{
+      "self":{
+         "href":"http://localhost:8080/invoices/reference/9WPOUBGF"
+      },
+      "invoices":{
+         "href":"http://localhost:8080/invoices"
+      },
+      "cancel":{
+         "href":"http://localhost:8080/invoices/9WPOUBGF/cancel"
+      },
+      "pay":{
+         "href":"http://localhost:8080/invoices/9WPOUBGF/pay"
+      }
+   }
+}
+
+                        				</code>
+                    				</pre>
+						</div>
+						<p>The following fields are included in the response:</p>
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 15%;">
+								<col style="width: 63%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Path</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td><p><code>id</code></p></td>
+								<td><p><code>Number</code></p></td>
+								<td><p>The internal ID of the invoice.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>reference</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The external invoice reference used to pay an invoice via the Payment Portal.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>amount</code></p></td>
+								<td><p><code>Number</code></p></td>
+								<td><p>The invoice amount.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>dueDate</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The date the invoice must be paid by.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>type</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The type of invoice. Types currently enabled are: LIBRARY_FINE and TUITION_FEES.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>status</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The status of the invoice: OUTSTANDING, PAID or CANCELLED.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>studentId</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The external ID of the student responsible for paying this invoice.</p></td>
+							</tr>
+							</tbody>
+						</table>
+						<div class="paragraph">
+							<p>The following links are included in the response:</p>
+						</div>
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 78%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Relation</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td><p><code>self</code></p></td>
+								<td><p>Link to this resource.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>invoices</code></p></td>
+								<td><p>Link to all invoices.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>cancel</code></p></td>
+								<td><p>Link to cancel this invoice.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>pay</code></p></td>
+								<td><p>Link to pay this invoice.</p></td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</section>
+
+				<!-- Six -->
+					<section id="six" class="wrapper style1 spotlights">
+					<div class="inner">
+						<h3 id="_get_invoices">GET  /invoices</h3>
+						Used to get a list of all the invoices in the system. Send a GET request to the /invoices endpoint. See the request sample below.
+						<div class="content">
+                					<pre>
+                    					<code class="language-http" data-lang="http">
+GET /invoices HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: localhost:8080
+                    					</code>
+                					</pre>
+						</div>
+						The API sends back a response similar to the sample below.
+						<div class="content">
+                    				<pre>
+                        				<code class="language-http" data-lang="http">
+HTTP/1.1 200 OK
+Content-Type: application/hal+json
+Content-Length: 1018
+
+{
+   "_embedded":{
+      "invoiceList":[
+         {
+            "id":13,
+            "reference":"CYK1U7RA",
+            "amount":10.5,
+            "dueDate":"2021-12-25",
+            "type":"TUITION_FEES",
+            "status":"OUTSTANDING",
+            "studentId":"c6666666",
+            "_links":{
+               "self":{
+                  "href":"http://localhost:8080/invoices/reference/CYK1U7RA"
+               },
+               "invoices":{
+                  "href":"http://localhost:8080/invoices"
+               },
+               "cancel":{
+                  "href":"http://localhost:8080/invoices/CYK1U7RA/cancel"
+               },
+               "pay":{
+                  "href":"http://localhost:8080/invoices/CYK1U7RA/pay"
+               }
+            }
+         },
+         {
+            "id":14,
+            "reference":"HBOKJX7U",
+            "amount":5.3,
+            "dueDate":"2022-01-10",
+            "type":"LIBRARY_FINE",
+            "status":"PAID",
+            "studentId":"c6666666",
+            "_links":{
+               "self":{
+                  "href":"http://localhost:8080/invoices/reference/HBOKJX7U"
+               },
+               "invoices":{
+                  "href":"http://localhost:8080/invoices"
+               }
+            }
+         },
+         {
+            "id":15,
+            "reference":"OTN7VGQQ",
+            "amount":1.0,
+            "dueDate":"2022-02-28",
+            "type":"LIBRARY_FINE",
+            "status":"CANCELLED",
+            "studentId":"c6666666",
+            "_links":{
+               "self":{
+                  "href":"http://localhost:8080/invoices/reference/OTN7VGQQ"
+               },
+               "invoices":{
+                  "href":"http://localhost:8080/invoices"
+               }
+            }
+         }
+      ]
+   },
+   "_links":{
+      "self":{
+         "href":"http://localhost:8080/invoices"
+      }
+   }
+}
+                        				</code>
+                    				</pre>
+						</div>
+						<p>The following fields are included in each account returned in the response:</p>
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 15%;">
+								<col style="width: 63%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Path</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td><p><code>id</code></p></td>
+								<td><p><code>Number</code></p></td>
+								<td><p>The internal ID of the invoice.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>reference</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The external invoice reference used to pay an invoice via the Payment Portal.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>amount</code></p></td>
+								<td><p><code>Number</code></p></td>
+								<td><p>The invoice amount.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>dueDate</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The date the invoice must be paid by.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>type</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The type of invoice. Types currently enabled are: LIBRARY_FINE and TUITION_FEES.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>status</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The status of the invoice: OUTSTANDING, PAID or CANCELLED.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>studentId</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The external ID of the student responsible for paying this invoice.</p></td>
+							</tr>
+							</tbody>
+						</table>
+						<div class="paragraph">
+							<p>The following links are included in the response:</p>
+						</div>
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 78%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Relation</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td><p><code>self</code></p></td>
+								<td><p>Link to this resource.</p></td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</section>
+
+				<!-- Seven -->
+					<section id="seven" class="wrapper style1 spotlights">
+					<div class="inner">
+						<h3 id="_put_invoicesrefpay">PUT  /invoices/{reference}/pay</h3>
+						Used to pay an invoice. Send a PUT request to the /invoices/{reference}/pay endpoint. The body of the request must be empty. See the request sample below.
+						<div class="content">
+                					<pre>
+                    					<code class="language-http" data-lang="http">
+PUT /invoices/YOQOF4SI/pay HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: localhost:8080
+                    					</code>
+                					</pre>
+						</div>
+						The following parameter must be provided when paying an invoice:
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 78%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Parameter</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td><p><code>reference</code></p></td>
+								<td><p>The external reference of the invoice to pay.</p></td>
+							</tr>
+							</tbody>
+						</table>
+						Upon successful payment, the API sends back a response similar to the sample below.
+						<div class="content">
+                    				<pre>
+                        				<code class="language-http" data-lang="http">
+HTTP/1.1 200 OK
+Content-Type: application/hal+json
+Content-Length: 262
+{
+   "id":35,
+   "reference":"YOQOF4SI",
+   "amount":10.5,
+   "dueDate":"2021-12-25",
+   "type":"TUITION_FEES",
+   "status":"PAID",
+   "studentId":"c6666666",
+   "_links":{
+      "self":{
+         "href":"http://localhost:8080/invoices/reference/YOQOF4SI"
+      },
+      "invoices":{
+         "href":"http://localhost:8080/invoices"
+      }
+   }
+}
+
+                        				</code>
+                    				</pre>
+						</div>
+						<p>The following fields are included in the response:</p>
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 15%;">
+								<col style="width: 63%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Path</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td><p><code>id</code></p></td>
+								<td><p><code>Number</code></p></td>
+								<td><p>The internal ID of the invoice.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>reference</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The external invoice reference used to pay an invoice via the Payment Portal.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>amount</code></p></td>
+								<td><p><code>Number</code></p></td>
+								<td><p>The invoice amount.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>dueDate</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The date the invoice must be paid by.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>type</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The type of invoice. Types currently enabled are: LIBRARY_FINE and TUITION_FEES.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>status</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The status of the invoice: OUTSTANDING, PAID or CANCELLED.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>studentId</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The external ID of the student responsible for paying this invoice.</p></td>
+							</tr>
+							</tbody>
+						</table>
+						<div class="paragraph">
+							<p>The following links are included in the response:</p>
+						</div>
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 78%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Relation</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td><p><code>self</code></p></td>
+								<td><p>Link to this resource.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>invoices</code></p></td>
+								<td><p>Link to all invoices.</p></td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</section>
+
+				<!-- Eight -->
+					<section id="eight" class="wrapper style1 spotlights">
+					<div class="inner">
+						<h3 id="_delete_invoicesrefcancel">DELETE /invoices/{reference}/cancel</h3>
+						Used to cancel an invoice. Send a DELETE request to the /invoices/{reference}/cancel endpoint. The body of the request must be empty. Only invoices which are currently outstanding can be deleted. See the request sample below.
+						<div class="content">
+                					<pre>
+                    					<code class="language-http" data-lang="http">
+DELETE /invoices/CPDXVWBK/cancel HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Host: localhost:8080
+                    					</code>
+                					</pre>
+						</div>
+						The following parameter must be provided when deleting an invoice:
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 78%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Parameter</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td><p><code>reference</code></p></td>
+								<td><p>The external reference of the invoice to delete.</p></td>
+							</tr>
+							</tbody>
+						</table>
+						Upon successful cancellation, the API sends back a response similar to the sample below.
+						<div class="content">
+                    				<pre>
+                        				<code class="language-http" data-lang="http">
+HTTP/1.1 200 OK
+Content-Type: application/hal+json
+Content-Length: 266
+{
+   "id":7,
+   "reference":"CPDXVWBK",
+   "amount":10.5,
+   "dueDate":"2021-12-25",
+   "type":"TUITION_FEES",
+   "status":"CANCELLED",
+   "studentId":"c6666666",
+   "_links":{
+      "self":{
+         "href":"http://localhost:8080/invoices/reference/CPDXVWBK"
+      },
+      "invoices":{
+         "href":"http://localhost:8080/invoices"
+      }
+   }
+}
+                        				</code>
+                    				</pre>
+						</div>
+						<p>The following fields are included in each account returned in the response:</p>
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 15%;">
+								<col style="width: 63%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Path</th>
+								<th>Type</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td><p><code>id</code></p></td>
+								<td><p><code>Number</code></p></td>
+								<td><p>The internal ID of the invoice.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>reference</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The external invoice reference used to pay an invoice via the Payment Portal.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>amount</code></p></td>
+								<td><p><code>Number</code></p></td>
+								<td><p>The invoice amount.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>dueDate</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The date the invoice must be paid by.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>type</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The type of invoice. Types currently enabled are: LIBRARY_FINE and TUITION_FEES.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>status</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The status of the invoice: OUTSTANDING, PAID or CANCELLED.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>studentId</code></p></td>
+								<td><p><code>String</code></p></td>
+								<td><p>The external ID of the student responsible for paying this invoice.</p></td>
+							</tr>
+							</tbody>
+						</table>
+						<div class="paragraph">
+							<p>The following links are included in the response:</p>
+						</div>
+						<table>
+							<colgroup>
+								<col style="width: 22%;">
+								<col style="width: 78%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>Relation</th>
+								<th>Description</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td><p><code>self</code></p></td>
+								<td><p>Link to this resource.</p></td>
+							</tr>
+							<tr>
+								<td><p><code>invoices</code></p></td>
+								<td><p>Link to all invoices.</p></td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</section>
+			</div>
+
+		<!-- Footer -->
+		<footer id="footer" class="wrapper style1-alt">
+			<div class="inner">
+				<ul class="menu">
+						<li>&copy <a href="https://github.com/tvergilio">Thalita Vergilio</a> 2022. All rights reserved.</li><li>Template: <a href="https://html5up.net">HTML5 UP</a></li>
+					</ul>
+			</div>
+		</footer>
+
+		<!-- Scripts -->
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/jquery.scrollex.min.js"></script>
+		<script src="assets/js/jquery.scrolly.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
+
+
