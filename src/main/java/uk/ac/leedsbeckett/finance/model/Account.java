@@ -18,7 +18,7 @@ public class Account {
     Long id;
     @Column(unique = true)
     private String studentId;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @JsonIgnore
     private List<Invoice> invoiceList = new ArrayList<>();
